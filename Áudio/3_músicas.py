@@ -40,7 +40,7 @@ async def executar_contagem():
         if sessao:
             try:
                 info = await sessao.try_get_media_properties_async()
-                if info.title: # Só sai do loop quando houver uma música carregada
+                if info.title: 
                     break
             except:
                 pass
@@ -56,6 +56,11 @@ async def executar_contagem():
         await asyncio.sleep(2)
         try:
             info = await sessao.try_get_media_properties_async()
+            
+            # FILTRO DE INTEGRIDADE: Ignora se o título estiver vazio (transição)
+            if not info.title or info.title.strip() == "":
+                continue
+
             nova = f"{info.artist} - {info.title}"
             if nova != musica_atual:
                 contador += 1
