@@ -59,15 +59,25 @@ async def executar_contagem():
         except:
             continue
 
-    # Espera a 3ª música acabar para pausar
-    print("⏳ Aguardando fim da 3ª música...")
-    while True:
-        await asyncio.sleep(2)
-        info = await sessao.try_get_media_properties_async()
-        if f"{info.artist} - {info.title}" != musica_atual:
-            await sessao.try_toggle_play_pause_async()
-            exibir_aviso_grande("⏸️ 3 Músicas! Pausado.")
-            break
+    # --- RETA FINAL: A 3ª MÚSICA ---
+    print("⏳ Sincronizando pouso da 3ª música...")
+    
+    # Pega as propriedades da linha do tempo
+    timeline = sessao.get_timeline_properties()
+    
+    # O Python converte automaticamente para timedelta, usamos total_seconds()
+    total = timeline.end_time.total_seconds()
+    atual = timeline.position.total_seconds()
+    restante = total - atual
+
+    if restante > 0:
+        # Dorme o tempo restante com 0.5s de margem de segurança
+        print(f"⏱️ Faltam {restante:.1f}s. Aguardando o fim...")
+        await asyncio.sleep(restante - 0.5)
+    
+    # Comando de pausa cravado no final
+    await sessao.try_toggle_play_pause_async()
+    exibir_aviso_grande("⏸️ 3 Músicas! Pausado.")
 
 if __name__ == "__main__":
     asyncio.run(executar_contagem())
