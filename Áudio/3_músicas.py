@@ -85,6 +85,7 @@ async def executar_contagem():
                 
                 await sessao.try_toggle_play_pause_async()
                 exibir_aviso_grande("⏸️ 3 Músicas! Pausado.")
+                await asyncio.sleep(3.5)
                 break
         except:
             continue
