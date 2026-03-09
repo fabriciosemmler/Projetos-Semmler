@@ -1,5 +1,32 @@
+import tkinter as tk
+import threading
 import asyncio
 from winrt.windows.media.control import GlobalSystemMediaTransportControlsSessionManager
+
+def exibir_aviso_grande(texto):
+    def criar_gui():
+        root = tk.Tk()
+        root.overrideredirect(True) # Remove bordas (-Caption)
+        root.attributes("-topmost", True) # Sempre no topo (+AlwaysOnTop)
+        root.attributes("-toolwindow", True) # Oculta da barra de tarefas (+ToolWindow)
+        root.configure(bg='#1f1f1f')
+        
+        # Geometria idêntica ao AHK: largura 600, altura 80, posição y50 centralizado
+        largura, altura = 600, 80
+        screen_w = root.winfo_screenwidth()
+        root.geometry(f"{largura}x{altura}+{(screen_w - largura) // 2}+50")
+        
+        # Estilo: Segoe UI, tamanho 24, Negrito, cor Aqua (#00FFFF)
+        label = tk.Label(root, text=texto, font=("Segoe UI", 24, "bold"), 
+                         fg="#00FFFF", bg="#1f1f1f", wraplength=550)
+        label.pack(expand=True)
+        
+        # Timer de 3 segundos para fechar
+        root.after(3000, root.destroy)
+        root.mainloop()
+    
+    # Roda em thread separada para não travar o monitoramento da música
+    threading.Thread(target=criar_gui, daemon=True).start()
 
 DEEZER_ID = "com.deezer.deezer-desktop"
 
@@ -16,7 +43,7 @@ async def executar_contagem():
     # 1ª Música: Detecta o que está tocando agora
     info = await sessao.try_get_media_properties_async()
     musica_atual = f"{info.artist} - {info.title}"
-    print(f"▶️ [1/3] {musica_atual}")
+    exibir_aviso_grande(f"▶️ [1/3] {musica_atual}")
 
     # Monitora as próximas 2 trocas (totalizando 3 faixas)
     contador = 0
@@ -28,7 +55,7 @@ async def executar_contagem():
             if nova != musica_atual:
                 contador += 1
                 musica_atual = nova
-                print(f"🔄 [{contador + 1}/3] {musica_atual}")
+                exibir_aviso_grande(f"🔄 [{contador + 1}/3] {musica_atual}")
         except:
             continue
 
@@ -39,7 +66,7 @@ async def executar_contagem():
         info = await sessao.try_get_media_properties_async()
         if f"{info.artist} - {info.title}" != musica_atual:
             await sessao.try_toggle_play_pause_async()
-            print("⏸️ Pausado!")
+            exibir_aviso_grande("⏸️ 3 Músicas! Pausado.")
             break
 
 if __name__ == "__main__":
