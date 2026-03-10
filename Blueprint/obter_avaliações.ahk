@@ -111,8 +111,31 @@ F11:: {
             Sleep(500)
             Send("{Enter}")
             
-            ; Aguarda 3 segundos para o navegador terminar de baixar o arquivo HTML
-            Sleep(3000)
+            ; ==========================================
+            ; NOVIDADE 5: Espera Dinâmica (Teste da Porta Trancada)
+            ; ==========================================
+            Loop {
+                Sleep(500) ; Intervalo de meio segundo entre as checagens
+                
+                ; 1. Confirma se o Chrome já criou o arquivo na pasta
+                if FileExist(caminho_salvamento) {
+                    try {
+                        ; 2. Tenta "abrir a porta" exigindo permissão de escrita ("a" de append)
+                        arquivo := FileOpen(caminho_salvamento, "a")
+                        
+                        ; 3. Se conseguiu abrir, a porta estava destrancada!
+                        if (arquivo) {
+                            arquivo.Close() ; Fecha a porta imediatamente
+                            break ; O download acabou, sai do loop e vai para a próxima escola
+                        }
+                    }
+                }
+                
+                ; Trava de segurança: Se a internet cair ou o Chrome travar, aborta após 30 segundos
+                if (A_Index > 60) {
+                    break
+                }
+            }
 
         } else {
             Send("{Esc}")
