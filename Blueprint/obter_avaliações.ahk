@@ -62,12 +62,25 @@ F11:: {
             Sleep(2500) ; Espera 3 segundos para a lista de avaliações carregar na tela
 
             ; ==========================================
-            ; NOVIDADE 3: Motor de Rolagem (WheelDown)
+            ; NOVIDADE 3: Motor de Rolagem Dinâmico
             ; ==========================================
-            ; Loop executa 20 vezes.
-            Loop 20 {
+            Loop {
                 Send("{WheelDown 10}") 
-                Sleep(800) 
+                Sleep(800) ; Aguarda a rolagem e o possível carregamento
+
+                ; Lê a cor na coordenada de controle do fundo
+                cor_atual := PixelGetColor(835, 1024)
+                
+                ; Se a cor for o cinza escuro, chegamos ao fundo. Interrompe a rolagem.
+                if (cor_atual = 0x5E5E5E) {
+                    break
+                }
+                
+                ; Trava de segurança elegante: se o Google travar ou a cor mudar, 
+                ; o robô não fica rolando para sempre. Limite máximo de 300 rolagens por local.
+                if (A_Index > 300) {
+                    break
+                }
             }
 
             ; ==========================================
