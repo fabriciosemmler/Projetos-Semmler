@@ -123,6 +123,22 @@ F11:: {
         Sleep(5000)
     }
     
-    ; 4. Finalização: Fecha a aba atual do navegador (Ctrl + W)
-    ; Send("^w")
+    ; 4. Finalização: Alerta visual e sonoro de conclusão
+    SoundBeep(750, 500) ; Toca um bipe de 750Hz por meio segundo
+    ExibirAvisoGrande("Extração Concluída!")
+}
+
+
+; ==========================================
+; FUNÇÕES AUXILIARES
+; ==========================================
+ExibirAvisoGrande(texto) {
+    try {
+        AvisoGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
+        AvisoGui.BackColor := "1f1f1f"
+        AvisoGui.SetFont("s24 cAqua bold", "Segoe UI")
+        AvisoGui.Add("Text", "Center w500", texto)
+        AvisoGui.Show("AutoSize NoActivate y50")
+        SetTimer () => AvisoGui.Destroy(), -3000
+    }
 }
