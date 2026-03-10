@@ -1,3 +1,4 @@
+import re
 import os
 import pdfkit
 
@@ -36,13 +37,25 @@ def gerar_relatorio():
 
     print("Injetando os dados da inteligência...")
     
-# Substituição em cascata correta (atualizando o html_final a cada passo)
+    # ==========================================
+    # FILTRO CIRÚRGICO: Limpa as citações da IA
+    # ==========================================
+    # Separamos a palavra gatilho para a interface do chat não quebrar o código
+    gatilho = "ci" + "te:"
+    padrao_citacao = r'\s*\[' + gatilho + r'.*?\]'
+    
+    # O Python lê as variáveis globais, limpa e salva nas variáveis locais (_limpo)
+    insights_limpo = re.sub(padrao_citacao, '', insights)
+    elogiado_limpo = re.sub(padrao_citacao, '', elogiado)
+    criticado_limpo = re.sub(padrao_citacao, '', criticado)
+
+    # Substituição em cascata chamando as variáveis limpas
     html_final = html_base.replace("{{CLIENTE}}", cliente)
     html_final = html_final.replace("{{AMOSTRAGEM}}", amostragem)
     html_final = html_final.replace("{{TIPO_NEGOCIO}}", tipo_negocio)
-    html_final = html_final.replace("{{INSIGHTS}}", insights)
-    html_final = html_final.replace("{{ELOGIADO}}", elogiado)
-    html_final = html_final.replace("{{CRITICADO}}", criticado)
+    html_final = html_final.replace("{{INSIGHTS}}", insights_limpo)
+    html_final = html_final.replace("{{ELOGIADO}}", elogiado_limpo)
+    html_final = html_final.replace("{{CRITICADO}}", criticado_limpo)
 
     print("Renderizando o PDF pixel-perfect...")
     
