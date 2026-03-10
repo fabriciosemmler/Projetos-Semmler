@@ -134,11 +134,17 @@ F11:: {
 ; ==========================================
 ExibirAvisoGrande(texto) {
     try {
-        AvisoGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
+        AvisoGui := Gui("+AlwaysOnTop -Caption +Border +ToolWindow")
         AvisoGui.BackColor := "1f1f1f"
         AvisoGui.SetFont("s24 cAqua bold", "Segoe UI")
-        AvisoGui.Add("Text", "Center w500", texto)
-        AvisoGui.Show("AutoSize NoActivate y50")
-        SetTimer () => AvisoGui.Destroy(), -3000
+        
+        ; Adicionamos uma quebra de linha com a instrução de clique
+        ElementoTexto := AvisoGui.Add("Text", "Center w500", texto "`n`n(Clique para fechar)")
+        
+        ; O gatilho: destrói a interface apenas quando o mouse clicar no texto
+        ElementoTexto.OnEvent("Click", (*) => AvisoGui.Destroy())
+        
+        ; Centraliza perfeitamente na tela (Center) em vez de ficar no topo (y50)
+        AvisoGui.Show("AutoSize NoActivate Center")
     }
 }
