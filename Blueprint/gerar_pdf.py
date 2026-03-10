@@ -26,8 +26,8 @@ def gerar_relatorio():
     
     # Textos do nosso piloto (Blueprint Idiomas)
     insights = (
-        "• A personalização é o maior ativo: O mercado valoriza intensamente o atendimento humanizado, com alunos citando nomes de professores e atendentes.\n<br><br>"
-        "• O gargalo digital é uma oportunidade: As grandes redes locais possuem uma falha sistêmica no atendimento online (esperas longas, WhatsApp ignorado).\n<br><br>"
+        "• A personalização é o maior ativo: O mercado valoriza intensamente o atendimento humanizado, com alunos citando nomes de professores e atendentes.<br>"
+        "• O gargalo digital é uma oportunidade: As grandes redes locais possuem uma falha sistêmica no atendimento online (esperas longas, WhatsApp ignorado).<br>"
         "• Transparência retém alunos: Processos burocráticos mal geridos são os maiores geradores de evasão."
     )
     elogiado = "O ponto mais forte dos concorrentes reside nas salas de aula e no balcão físico. Os clientes elogiam repetidamente a competência, a didática e o acolhimento dos professores. Aulas descritas como divertidas e dinâmicas são o padrão ouro de satisfação. A infraestrutura e a limpeza dos ambientes também são diferenciais."
