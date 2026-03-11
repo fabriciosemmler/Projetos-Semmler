@@ -9,14 +9,14 @@
         body {
             font-family: 'Montserrat', sans-serif;
             color: #333333;
-            line-height: 1.6;
+            line-height: 1.4; /* Reduzido de 1.6 para agrupar melhor o texto */
             margin: 0;
-            padding: 20px 40px;
-            background-color: #f4f7f6; /* Fundo cinza bem claro para dar contraste à folha branca */
+            padding: 10px 20px; /* Menos margem inútil nas bordas externas */
+            background-color: #f4f7f6; 
         }
         .folha {
             background-color: #ffffff;
-            padding: 30px 60px;
+            padding: 20px 40px; /* Reduzido preenchimento interno para ganhar área útil */
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             max-width: 800px;
@@ -25,41 +25,41 @@
         .cabecalho {
             text-align: center;
             border-bottom: 2px solid #004080;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
+            padding-bottom: 10px; /* Reduzido */
+            margin-bottom: 20px; /* Reduzido (era 40px) */
         }
         .cabecalho h1 {
-            color: #004080; /* Azul corporativo escuro */
+            color: #004080; 
             font-size: 26px;
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0; /* Reduzido */
             letter-spacing: -0.5px;
         }
         .meta-info {
-            font-size: 18px;
+            font-size: 15px; /* Fonte ligeiramente menor apenas na meta-info para destacar o corpo */
             color: #555555;
             background-color: #f8f9fa;
-            padding: 10px;
+            padding: 8px 15px;
             border-radius: 5px;
             display: inline-block;
             text-align: left;
         }
         .titulo-secao {
             color: #2c3e50;
-            font-size: 20px;
-            margin-top: 35px;
-            margin-bottom: 15px;
+            font-size: 18px;
+            margin-top: 20px; /* Reduzido (era 35px) */
+            margin-bottom: 8px; /* Reduzido (era 15px) */
             border-left: 4px solid #004080;
-            padding-left: 12px;
+            padding-left: 10px;
         }
         .caixa-texto {
             background-color: #fafafa;
             border: 1px solid #eeeeee;
             border-left: 4px solid #cccccc;
-            padding: 20px;
+            padding: 12px 18px; /* Menos desperdício de espaço dentro das caixas */
             border-radius: 0 4px 4px 0;
             font-size: 18px; /* alvo-dinamico */
             text-align: justify;
-            white-space: pre-wrap; /* Mantém as quebras de linha que o Python enviar */
+            white-space: pre-wrap; 
         }
         .caixa-verde { 
             border-left-color: #27ae60; 
@@ -71,11 +71,11 @@
         }
         .rodape {
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: #999999;
-            margin-top: 50px;
+            margin-top: 25px; /* Reduzido (era 50px) */
             border-top: 1px solid #eeeeee;
-            padding-top: 20px;
+            padding-top: 15px; /* Reduzido */
             font-weight: 600;
         }
     </style>
@@ -106,7 +106,7 @@
         </div>
 
         <div class="rodape">
-            Tecnologia e Automação por Semmler Automações
+            Tecnologia e Automação por Semmler Micro-Automações
         </div>
     </div>
 </body>

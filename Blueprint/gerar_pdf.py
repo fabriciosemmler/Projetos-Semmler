@@ -73,7 +73,7 @@ def gerar_relatorio():
     # ==========================================
     # MOTOR ADAPTATIVO: Testa os tamanhos de fonte
     # ==========================================
-    tamanhos_teste = [20, 19, 18, 17, 16, 15, 14]
+    tamanhos_teste = [22, 21, 20, 19, 18, 17, 16, 15, 14]
     
     for tamanho in tamanhos_teste:
         print(f"Testando renderização com fonte de {tamanho}px...")
