@@ -3,6 +3,20 @@
 
 F11:: {
     ; ==========================================
+    ; NOVIDADE 9: Seleção Dinâmica do Cliente
+    ; ==========================================
+    ; Abre a janela nativa do Windows para você apontar o txt do cliente
+    caminho_txt := FileSelect(3, , "Selecione o lista_concorrentes.txt do cliente", "Documentos de Texto (*.txt)")
+    
+    ; Se cancelar a janela, aborta silenciosamente
+    if (caminho_txt = "") {
+        return
+    }
+    
+    ; Extrai automaticamente a rota da pasta onde esse txt está guardado
+    SplitPath(caminho_txt, , &pasta_cliente)
+
+    ; ==========================================
     ; NOVIDADE 8: Parametrização Dinâmica (Radar de Sinônimos)
     ; ==========================================
     tela_nicho := InputBox("Digite palavras-chave separadas por vírgula (ex: Idiomas, Inglês, Escola):`nDeixe em branco ou cancele para abortar.", "Filtro Anti-Ruído", "w450 h130")
@@ -23,14 +37,14 @@ F11:: {
     Run("https://www.google.com.br/maps")
     Sleep(5000)
     
-    ; 2. Lê o arquivo e fatia as linhas
-    texto_completo := FileRead("lista_concorrentes.txt", "UTF-8")
+    ; 2. Lê o arquivo escolhido dinamicamente e fatia as linhas
+    texto_completo := FileRead(caminho_txt, "UTF-8")
     linhas := StrSplit(texto_completo, "`n", "`r")
 
     ; ==========================================
-    ; NOVIDADE 5: Criação da Subpasta
+    ; NOVIDADE 5: Criação da Subpasta no Cliente Certo
     ; ==========================================
-    pasta_destino := A_ScriptDir "\paginas_html"
+    pasta_destino := pasta_cliente "\paginas_html"
     if not DirExist(pasta_destino)
         DirCreate(pasta_destino)
     
