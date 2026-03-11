@@ -3,16 +3,17 @@
 
 F11:: {
     ; ==========================================
-    ; NOVIDADE 8: Parametrização Dinâmica de Nicho
+    ; NOVIDADE 8: Parametrização Dinâmica (Radar de Sinônimos)
     ; ==========================================
-    tela_nicho := InputBox("Digite a palavra-chave do nicho (ex: Lavanderia, Veterinária):`nDeixe em branco ou cancele para abortar.", "Filtro Anti-Ruído", "w350 h130")
+    tela_nicho := InputBox("Digite palavras-chave separadas por vírgula (ex: Idiomas, Inglês, Escola):`nDeixe em branco ou cancele para abortar.", "Filtro Anti-Ruído", "w450 h130")
     
     ; Trava de segurança: Se o usuário cancelar ou não digitar nada, aborta o script
     if (tela_nicho.Result = "Cancel" or tela_nicho.Value = "") {
         return 
     }
     
-    nicho_cliente := tela_nicho.Value ; Salva a palavra digitada na memória
+    ; Fila de palavras: Separa o que você digitou pelas vírgulas
+    lista_palavras := StrSplit(tela_nicho.Value, ",")
 
     ; Trava as coordenadas do mouse e do buscador de pixels para a área útil do navegador (Client)
     CoordMode("Mouse", "Client")
@@ -68,11 +69,9 @@ F11:: {
         Sleep(5000)
 
         ; ==========================================
-        ; NOVIDADE 7: Validação de Nicho (Filtro Anti-Ruído)
+        ; NOVIDADE 7: Validação de Nicho (Radar Anti-Ruído)
         ; ==========================================
-        ; (A variável nicho_cliente agora vem lá do InputBox do início)
-        
-        A_Clipboard := "" ; Limpa a memória para não pegar lixo da rodada anterior
+        A_Clipboard := "" ; Limpa a memória
         
         Send("^a") ; Seleciona todo o texto da tela
         Sleep(300)
@@ -81,9 +80,22 @@ F11:: {
         Send("{Esc}") ; Tira a marcação azul da tela
         Sleep(300)
         
-        ; O Bafômetro: Se a palavra não estiver no texto copiado, é um estabelecimento errado
-        if not InStr(A_Clipboard, nicho_cliente) {
-            continue ; Aborta este local silenciosamente e puxa o próximo da lista do txt
+        passou_no_teste := false ; Começa assumindo que é o local errado
+        
+        ; Verifica palavra por palavra da sua lista
+        For idx, palavra in lista_palavras {
+            palavra_limpa := Trim(palavra) ; Tira espaços em branco indesejados
+            
+            ; Se encontrar qualquer uma das palavras, aprova o local e para de procurar
+            if InStr(A_Clipboard, palavra_limpa) {
+                passou_no_teste := true
+                break 
+            }
+        }
+
+        ; Se rodou toda a lista e não achou NENHUMA palavra, é lixo. Pula pro próximo.
+        if not passou_no_teste {
+            continue 
         }
 
         ; ==========================================
