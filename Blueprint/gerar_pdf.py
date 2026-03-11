@@ -38,6 +38,9 @@ def gerar_relatorio():
         amostragem = "0"
         print("Aviso: 'reviews_concorrentes.txt' não encontrado.")
 
+    # Força tudo para minúsculo e remove espaços em branco nas pontas
+    tipo_negocio = tipo_negocio.lower().strip()
+
     print("Lendo o molde HTML...")
     
     if not os.path.exists(caminho_template):
