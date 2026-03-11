@@ -11,7 +11,7 @@ from pypdf import PdfReader
 # CONTEÚDO DO RELATÓRIO
 # ==========================================
 cliente = "Blueprint Idiomas"
-amostragem = "228"
+amostragem = ""
 tipo_negocio = "escolas de idiomas"
 insights = "• A humanização do atendimento presencial e a didática dos professores são os maiores retentores de alunos, com profissionais como Camila, Ricardo e Álvaro sendo elogiados nominalmente [cite: 59, 102, 144].<br><br>• A comunicação digital é um gargalo na concorrência, pois mensagens ignoradas no WhatsApp e esperas infinitas no telefone geram forte frustração [cite: 24, 43, 158].<br><br>• A desorganização administrativa, como atrasos de material didático e reajustes surpresa nas rematrículas, impulsiona o cancelamento repentino de contratos[cite: 3, 7, 8]."
 elogiado = "O fator humano é o ponto mais forte das escolas concorrentes[cite: 59, 61, 77]. Os clientes valorizam professores engajados e metodologias dinâmicas que criam um ambiente acolhedor[cite: 59, 61, 77]. O atendimento presencial ágil no momento da matrícula recebe muitos destaques positivos, assim como a boa infraestrutura física e a limpeza das instalações[cite: 58, 64, 104]."
@@ -21,12 +21,23 @@ criticado = "A maior falha do mercado local reside na gestão administrativa e n
 diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
 caminho_template = os.path.join(diretorio_raiz, "template.html")
 caminho_pdf = os.path.join(diretorio_raiz, "Relatorio_Insights.pdf")
+caminho_txt = os.path.join(diretorio_raiz, "reviews_concorrentes.txt")
 
 # Rota cirúrgica para o motor gráfico (Caminho padrão de instalação no Windows)
 caminho_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
 configuracao = pdfkit.configuration(wkhtmltopdf=caminho_wkhtmltopdf)
 
 def gerar_relatorio():
+    global amostragem # Permite reescrever a variável vazia lá do topo
+
+    print("Lendo o arquivo de avaliações...")
+    if os.path.exists(caminho_txt):
+        with open(caminho_txt, 'r', encoding='utf-8') as f:
+            amostragem = str(len(f.readlines()))
+    else:
+        amostragem = "0"
+        print("Aviso: 'reviews_concorrentes.txt' não encontrado.")
+
     print("Lendo o molde HTML...")
     
     if not os.path.exists(caminho_template):
