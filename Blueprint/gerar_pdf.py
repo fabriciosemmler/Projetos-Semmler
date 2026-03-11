@@ -22,6 +22,7 @@ diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
 caminho_template = os.path.join(diretorio_raiz, "template.html")
 caminho_pdf = os.path.join(diretorio_raiz, "Relatorio_Insights.pdf")
 caminho_txt = os.path.join(diretorio_raiz, "reviews_concorrentes.txt")
+caminho_whatsapp = os.path.join(diretorio_raiz, "Relatorio_WhatsApp.txt")
 
 # Rota cirúrgica para o motor gráfico (Caminho padrão de instalação no Windows)
 caminho_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
@@ -29,6 +30,7 @@ configuracao = pdfkit.configuration(wkhtmltopdf=caminho_wkhtmltopdf)
 
 def gerar_relatorio():
     global amostragem # Permite reescrever a variável vazia lá do topo
+    global tipo_negocio
 
     print("Lendo o arquivo de avaliações...")
     if os.path.exists(caminho_txt):
@@ -61,6 +63,35 @@ def gerar_relatorio():
     insights_limpo = re.sub(padrao_citacao, '', insights)
     elogiado_limpo = re.sub(padrao_citacao, '', elogiado)
     criticado_limpo = re.sub(padrao_citacao, '', criticado)
+
+# ==========================================
+    # GERAÇÃO DO RELATÓRIO PARA WHATSAPP
+    # ==========================================
+    print("Gerando versão otimizada para WhatsApp...")
+    
+    # Converte as quebras de linha do HTML para texto puro
+    insights_wa = insights_limpo.replace("<br>", "\n")
+    elogiado_wa = elogiado_limpo.replace("<br>", "\n")
+    criticado_wa = criticado_limpo.replace("<br>", "\n")
+    
+    texto_whatsapp = f"""*Relatório de Inteligência de Mercado*
+    *Cliente:* {cliente}
+    *Amostragem:* {amostragem} avaliações extraídas de {tipo_negocio} na mesma região.
+
+    *Insights Estratégicos*
+    {insights_wa}
+
+    *Tópico Mais Elogiado*
+    {elogiado_wa}
+
+    *Tópico Mais Criticado*
+    {criticado_wa}
+
+    _Tecnologia e Automação por Semmler Automações_"""
+
+    # Salva o texto pronto na mesma pasta
+    with open(caminho_whatsapp, 'w', encoding='utf-8') as f:
+        f.write(texto_whatsapp)
 
     # Opções de engenharia para o PDF
     opcoes = {

@@ -1,0 +1,18 @@
+*Relatório de Inteligência de Mercado*
+    *Cliente:* Blueprint Idiomas
+    *Amostragem:* 228 avaliações extraídas de escolas de idiomas na mesma região.
+
+    *Insights Estratégicos*
+    • A humanização do atendimento presencial e a didática dos professores são os maiores retentores de alunos, com profissionais como Camila, Ricardo e Álvaro sendo elogiados nominalmente.
+
+• A comunicação digital é um gargalo na concorrência, pois mensagens ignoradas no WhatsApp e esperas infinitas no telefone geram forte frustração.
+
+• A desorganização administrativa, como atrasos de material didático e reajustes surpresa nas rematrículas, impulsiona o cancelamento repentino de contratos.
+
+    *Tópico Mais Elogiado*
+    O fator humano é o ponto mais forte das escolas concorrentes. Os clientes valorizam professores engajados e metodologias dinâmicas que criam um ambiente acolhedor. O atendimento presencial ágil no momento da matrícula recebe muitos destaques positivos, assim como a boa infraestrutura física e a limpeza das instalações.
+
+    *Tópico Mais Criticado*
+    A maior falha do mercado local reside na gestão administrativa e no suporte remoto. Os clientes relatam profunda frustração com o atendimento via WhatsApp e telefone, sentindo-se ignorados ao tentarem cancelar matrículas ou resolver problemas urgentes. A quebra de expectativa financeira com reajustes abusivos e a falta de organização para entrega de materiais pagos geram a maioria das avaliações destrutivas.
+
+    _Tecnologia e Automação por Semmler Automações_
