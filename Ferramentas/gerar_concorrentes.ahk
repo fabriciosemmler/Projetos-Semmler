@@ -2,19 +2,24 @@
 #SingleInstance Force
 global pasta_cliente := ""
 global GuiInstrucoes := "" ; Novo objeto global para a interface
+global ultima_pasta := "" ; NOVO: Memória persistente do último diretório acessado
 
 ; ==========================================
 ; FASE 1: Preparação e Prompt (Atalho: F19)
 ; ==========================================
 F19:: {
-    global pasta_cliente, GuiInstrucoes
+    global pasta_cliente, GuiInstrucoes, ultima_pasta ; NOVO: Injetada a nova global aqui
     
     ; 1. Abre a janela nativa para selecionar a PASTA do cliente
-    pasta_cliente := DirSelect("", 0, "Selecione a pasta do cliente para salvar a lista")
+; O asterisco (*) destrava o Windows, permitindo subir de nível e ver pastas "irmãs"
+    caminho_inicial := (ultima_pasta = "") ? "" : "*" ultima_pasta
+    pasta_cliente := DirSelect(caminho_inicial, 0, "Selecione a pasta do cliente para salvar a lista")
     
     if (pasta_cliente = "") {
         return ; Aborta silenciosamente
     }
+
+    ultima_pasta := pasta_cliente ; NOVO: Grava a escolha com sucesso na memória para a próxima rodada
 
     ; 2. Pede o ramo de atuação
     tela_ramo := InputBox("Qual o ramo do cliente? (Ex: Lavanderia automatizada)", "Gerador de Prompt", "w450 h130")
