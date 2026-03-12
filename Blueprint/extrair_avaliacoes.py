@@ -1,8 +1,6 @@
 import os
 from bs4 import BeautifulSoup
 
-import os
-from bs4 import BeautifulSoup
 
 # ==========================================
 # CONFIGURAÇÕES (Rotas Absolutas)
