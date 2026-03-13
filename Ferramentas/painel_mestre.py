@@ -83,7 +83,7 @@ def acao_gerar_pdf():
 # CONSTRUÇÃO DO PAINEL (Interface minimalista)
 # ==========================================
 root = tk.Tk()
-root.title("Semmler Micro-Automações - Painel Mestre")
+root.title("Semmler Automações - Painel Mestre")
 
 # --- Centralização Cirúrgica da Janela ---
 largura_janela = 480
@@ -101,7 +101,7 @@ root.resizable(False, False)
 root.configure(padx=20, pady=15, bg="#f0f0f0")
 
 # Título Principal
-tk.Label(root, text="Esteira de Automação", font=("Segoe UI", 16, "bold"), bg="#f0f0f0").pack(pady=(0, 5))
+tk.Label(root, text="Análise de Avaliações", font=("Segoe UI", 16, "bold"), bg="#f0f0f0").pack(pady=(0, 5))
 
 # Status do Cliente (Painel Inteligente)
 var_status = tk.StringVar()
