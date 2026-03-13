@@ -9,19 +9,10 @@ from pypdf import PdfReader
 # CONFIGURAÇÕES E ROTAS ABSOLUTAS
 # ==========================================
 
-# ==========================================
-# CONTEÚDO DO RELATÓRIO (SISTEMA HÍBRIDO)
-# ==========================================
-# Variáveis de sistema (agora preenchidas automaticamente)
+# Variáveis de sistema (preenchidas automaticamente)
 cliente = ""
 amostragem = ""
 tipo_negocio = ""
-
-# Textos gerados pela Inteligência Artificial
-insights = "• A humanização do atendimento presencial e a didática dos professores são os maiores retentores de alunos, com profissionais como Camila, Ricardo e Álvaro sendo elogiados nominalmente.<br><br>• A comunicação digital é um gargalo na concorrência, pois mensagens ignoradas no WhatsApp e esperas infinitas no telefone geram forte frustração.<br><br>• A desorganização administrativa, como atrasos de material didático e reajustes surpresa nas rematrículas, impulsiona o cancelamento repentino de contratos."
-elogiado = "O fator humano é o ponto mais forte das escolas concorrentes. Os clientes valorizam professores engajados e metodologias dinâmicas que criam um ambiente acolhedor. O atendimento presencial ágil no momento da matrícula recebe muitos destaques positivos, assim como a boa infraestrutura física e a limpeza das instalações."
-criticado = "A maior falha do mercado local reside na gestão administrativa e no suporte remoto. Os clientes relatam profunda frustração com o atendimento via WhatsApp e telefone, sentindo-se ignorados ao tentarem cancelar matrículas ou resolver problemas urgentes. A quebra de expectativa financeira com reajustes abusivos e a falta de organização para entrega de materiais pagos geram a maioria das avaliações destrutivas."
-# ==========================================
 
 diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
 # O template fica na pasta do script (sua pasta de Ferramentas)
@@ -56,7 +47,9 @@ def gerar_relatorio(pasta_alvo):
     # ==========================================
     caminho_pdf = os.path.join(pasta_alvo, f"Relatorio_{cliente}.pdf")
     caminho_txt = os.path.join(pasta_alvo, "reviews_concorrentes.txt")
-    caminho_whatsapp = os.path.join(pasta_alvo, f"Relatorio_{cliente}_WhatsApp.txt")
+    
+    # NOVIDADE: A rota do texto humano final
+    caminho_redacao = os.path.join(pasta_alvo, "redacao_final.txt")
 
     print("Lendo o arquivo de avaliações...")
     if os.path.exists(caminho_txt):
@@ -69,6 +62,28 @@ def gerar_relatorio(pasta_alvo):
     # Força tudo para minúsculo e remove espaços em branco nas pontas
     tipo_negocio = tipo_negocio.lower().strip()
 
+    # ==========================================
+    # NOVIDADE: Extração Dinâmica da Redação Final
+    # ==========================================
+    print("Lendo o texto final da redatora...")
+    if not os.path.exists(caminho_redacao):
+        print(f"\nErro: O arquivo 'redacao_final.txt' não foi encontrado.")
+        print("Crie este arquivo na pasta do cliente, cole o texto revisado pela sua sócia e rode novamente.")
+        return
+
+    with open(caminho_redacao, 'r', encoding='utf-8') as f:
+        texto_redacao = f.read()
+
+    # Pescadores RegEx (Extraem cirurgicamente o que está entre os títulos)
+    match_insights = re.search(r'= INSIGHTS =(.*?)(?== MAIS ELOGIADO =|$)', texto_redacao, re.DOTALL)
+    match_elogiado = re.search(r'= MAIS ELOGIADO =(.*?)(?== MAIS CRITICADO =|$)', texto_redacao, re.DOTALL)
+    match_criticado = re.search(r'= MAIS CRITICADO =(.*?)(?=$)', texto_redacao, re.DOTALL)
+
+    # Limpa espaços em branco nas pontas e converte as quebras de linha para HTML (<br>)
+    insights_html = match_insights.group(1).strip().replace('\n', '<br>') if match_insights else "Dados de Insights ausentes."
+    elogiado_html = match_elogiado.group(1).strip().replace('\n', '<br>') if match_elogiado else "Dados de Elogios ausentes."
+    criticado_html = match_criticado.group(1).strip().replace('\n', '<br>') if match_criticado else "Dados de Críticas ausentes."
+
     print("Lendo o molde HTML...")
     
     if not os.path.exists(caminho_template):
@@ -78,46 +93,7 @@ def gerar_relatorio(pasta_alvo):
     with open(caminho_template, 'r', encoding='utf-8') as f:
         html_base = f.read()
 
-    print("Injetando os dados da inteligência...")
-    
-    # ==========================================
-    # FILTRO CIRÚRGICO: Limpa as citações da IA
-    # ==========================================
-    gatilho = "ci" + "te:"
-    padrao_citacao = r'\s*\[' + gatilho + r'.*?\]'
-    
-    insights_limpo = re.sub(padrao_citacao, '', insights)
-    elogiado_limpo = re.sub(padrao_citacao, '', elogiado)
-    criticado_limpo = re.sub(padrao_citacao, '', criticado)
-
-    # ==========================================
-    # GERAÇÃO DO RELATÓRIO PARA WHATSAPP
-    # ==========================================
-    print("Gerando versão otimizada para WhatsApp...")
-    
-    # Converte as quebras de linha do HTML para texto puro
-    insights_wa = insights_limpo.replace("<br>", "\n")
-    elogiado_wa = elogiado_limpo.replace("<br>", "\n")
-    criticado_wa = criticado_limpo.replace("<br>", "\n")
-    
-    texto_whatsapp = f"""*Relatório de Inteligência de Mercado*
-*Cliente:* {cliente}
-*Amostragem:* {amostragem} avaliações extraídas.
-
-*Insights Estratégicos*
-{insights_wa}
-
-*Tópico Mais Elogiado*
-{elogiado_wa}
-
-*Tópico Mais Criticado*
-{criticado_wa}
-
-_Tecnologia e Automação por Semmler Automações_"""
-
-    # Salva o texto pronto na pasta do cliente
-    with open(caminho_whatsapp, 'w', encoding='utf-8') as f:
-        f.write(texto_whatsapp)
+    print("Injetando os dados no PDF...")
 
     # Opções de engenharia para o PDF
     opcoes = {
@@ -142,9 +118,9 @@ _Tecnologia e Automação por Semmler Automações_"""
         html_final = html_base.replace("{{CLIENTE}}", cliente)
         html_final = html_final.replace("{{AMOSTRAGEM}}", amostragem)
         html_final = html_final.replace("{{TIPO_NEGOCIO}}", tipo_negocio)
-        html_final = html_final.replace("{{INSIGHTS}}", insights_limpo)
-        html_final = html_final.replace("{{ELOGIADO}}", elogiado_limpo)
-        html_final = html_final.replace("{{CRITICADO}}", criticado_limpo)
+        html_final = html_final.replace("{{INSIGHTS}}", insights_html)
+        html_final = html_final.replace("{{ELOGIADO}}", elogiado_html)
+        html_final = html_final.replace("{{CRITICADO}}", criticado_html)
         
         # Substitui apenas a linha que tem a assinatura alvo-dinamico
         html_final = html_final.replace("font-size: 18px; /* alvo-dinamico */", f"font-size: {tamanho}px; /* alvo-dinamico */")
