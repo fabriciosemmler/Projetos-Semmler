@@ -3,13 +3,20 @@
 
 F11:: {
     ; ==========================================
-    ; NOVIDADE 9: Seleção Dinâmica do Cliente
+    ; NOVIDADE 9: Seleção Dinâmica (Via Memória do Sistema)
     ; ==========================================
-    ; Abre a janela nativa do Windows para você apontar a PASTA do cliente
-    pasta_cliente := DirSelect("", 0, "Selecione a pasta do cliente")
+    ; Lê o caminho da pasta salvo pelo processo anterior
+    caminho_memoria := A_ScriptDir "\memoria_pasta.txt"
     
-    ; Se cancelar a janela, aborta silenciosamente
-    if (pasta_cliente = "") {
+    if not FileExist(caminho_memoria) {
+        MsgBox("O arquivo 'memoria_pasta.txt' não foi encontrado. Rode as etapas anteriores primeiro.", "Aviso de Segurança", "Iconi")
+        return
+    }
+    
+    pasta_cliente := Trim(FileRead(caminho_memoria, "UTF-8"))
+    
+    if not DirExist(pasta_cliente) {
+        MsgBox("A pasta registrada na memória não existe mais: " pasta_cliente, "Erro de Rota", "IconX")
         return
     }
     
@@ -18,7 +25,7 @@ F11:: {
     
     ; Trava de Segurança 1: O arquivo existe na pasta?
     if not FileExist(caminho_txt) {
-        MsgBox("O arquivo 'lista_concorrentes.txt' não foi encontrado na pasta selecionada.", "Aviso de Segurança", "Iconi")
+        MsgBox("O arquivo 'lista_concorrentes.txt' não foi encontrado na pasta do cliente.", "Aviso de Segurança", "Iconi")
         return
     }
     
@@ -33,17 +40,24 @@ F11:: {
     linhas := StrSplit(texto_completo, "`n", "`r")
 
     ; ==========================================
-    ; NOVIDADE 8: Parametrização Dinâmica (Radar de Sinônimos)
+    ; NOVIDADE 8: Parametrização Dinâmica (Lendo palavras_chave.txt)
     ; ==========================================
-    tela_nicho := InputBox("Digite palavras-chave separadas por vírgula (ex: Idiomas, Inglês, Escola):`nDeixe em branco ou cancele para abortar.", "Filtro Anti-Ruído", "w450 h130")
+    caminho_palavras := pasta_cliente "\palavras_chave.txt"
     
-    ; Trava de segurança: Se o usuário cancelar ou não digitar nada, aborta o script
-    if (tela_nicho.Result = "Cancel" or tela_nicho.Value = "") {
+    if not FileExist(caminho_palavras) {
+        MsgBox("O arquivo 'palavras_chave.txt' não foi encontrado. Rode a extração de keywords primeiro.", "Aviso de Segurança", "Iconi")
+        return
+    }
+    
+    texto_palavras := FileRead(caminho_palavras, "UTF-8")
+    
+    if (Trim(texto_palavras) = "") {
+        MsgBox("O arquivo 'palavras_chave.txt' está vazio.", "Aviso de Segurança", "Iconi")
         return 
     }
     
-    ; Fila de palavras: Separa o que você digitou pelas vírgulas
-    lista_palavras := StrSplit(tela_nicho.Value, ",")
+    ; Fila de palavras: Separa o conteúdo do arquivo pelas vírgulas
+    lista_palavras := StrSplit(texto_palavras, ",")
 
     ; Trava as coordenadas do mouse e do buscador de pixels para a área útil do navegador (Client)
     CoordMode("Mouse", "Client")
@@ -91,11 +105,11 @@ F11:: {
         ; Aperta Enter para entrar direto na página do local
         Send("{Enter}")
         
-        ; Aguarda 3 segundos carregando o local
-        Sleep(3000)
+        ; Aguarda 5 segundos carregando o local
+        Sleep(5000)
 
         ; ==========================================
-        ; NOVIDADE 7: Validação de Nicho (Radar Anti-Ruído)
+        ; NOVIDADE 7: Validação de Nicho (Radar Anti-Ruído Blindado)
         ; ==========================================
         A_Clipboard := "" ; Limpa a memória
         
@@ -108,12 +122,16 @@ F11:: {
         
         passou_no_teste := false ; Começa assumindo que é o local errado
         
-        ; Verifica palavra por palavra da sua lista
+        ; Força todo o texto copiado da tela para letras minúsculas
+        texto_copiado := StrLower(A_Clipboard)
+        
+        ; Verifica palavra por palavra da sua lista gerada pelo Python
         For idx, palavra in lista_palavras {
-            palavra_limpa := Trim(palavra) ; Tira espaços em branco indesejados
+            ; Tira espaços nas pontas e força a palavra-chave para minúscula também
+            palavra_limpa := StrLower(Trim(palavra)) 
             
             ; Se encontrar qualquer uma das palavras, aprova o local e para de procurar
-            if InStr(A_Clipboard, palavra_limpa) {
+            if InStr(texto_copiado, palavra_limpa) {
                 passou_no_teste := true
                 break 
             }
