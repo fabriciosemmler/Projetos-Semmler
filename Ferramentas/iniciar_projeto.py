@@ -7,7 +7,11 @@ def selecionar_pasta_base():
     # Pede para o usuário escolher o diretório raiz onde os clientes ficam
     pasta = filedialog.askdirectory(title="Selecione a pasta raiz dos seus clientes")
     if pasta:
-        var_pasta_base.set(pasta)
+        # --- AJUSTE CIRÚRGICO ---
+        # normpath converte todas as barras para o padrão correto do Windows (\)
+        pasta_limpa = os.path.normpath(pasta)
+        var_pasta_base.set(pasta_limpa)
+        # ------------------------
 
 def salvar_e_iniciar():
     base = var_pasta_base.get().strip()
