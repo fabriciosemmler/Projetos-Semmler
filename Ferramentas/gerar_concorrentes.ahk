@@ -2,43 +2,47 @@
 #SingleInstance Force
 global pasta_cliente := ""
 global GuiInstrucoes := ""
-global arquivo_memoria := A_ScriptDir "\memoria_pasta.txt" ; Define o arquivo de salvamento
-global ultima_pasta := ""
-
-; Lê o arquivo físico ao iniciar o script, se ele existir
-if FileExist(arquivo_memoria) {
-    ultima_pasta := FileRead(arquivo_memoria)
-}
 
 ; ==========================================
 ; FASE 1: Preparação e Prompt (Atalho: F19)
 ; ==========================================
 F19:: {
-    global pasta_cliente, GuiInstrucoes, ultima_pasta, arquivo_memoria
+    global pasta_cliente, GuiInstrucoes
     
-    ; 1. Abre a janela nativa para selecionar a PASTA (com asterisco para destravar a navegação)
-    caminho_inicial := (ultima_pasta = "") ? "" : "*" ultima_pasta
-    pasta_cliente := DirSelect(caminho_inicial, 0, "Selecione a pasta do cliente para salvar a lista")
+    ; 1. Lê a memória deixada pelo iniciar_projeto.py
+    caminho_memoria := A_ScriptDir "\memoria_pasta.txt"
     
-    if (pasta_cliente = "") {
-        return ; Aborta silenciosamente
+    if not FileExist(caminho_memoria) {
+        MsgBox("O arquivo 'memoria_pasta.txt' não foi encontrado. Rode o iniciar_projeto.py primeiro.", "Aviso de Segurança", "Iconi")
+        return
+    }
+    
+    pasta_cliente := Trim(FileRead(caminho_memoria, "UTF-8"))
+    
+    if not DirExist(pasta_cliente) {
+        MsgBox("A pasta registrada na memória não existe mais: " pasta_cliente, "Erro de Rota", "IconX")
+        return
     }
 
-    ; Grava fisicamente no disco para não esquecer ao reiniciar
-    ultima_pasta := pasta_cliente
-    if FileExist(arquivo_memoria) {
-        FileDelete(arquivo_memoria)
+    ; 2. Caça o arquivo INI curinga na pasta do cliente
+    caminho_ini := ""
+    Loop Files, pasta_cliente "\projeto*.ini" {
+        caminho_ini := A_LoopFilePath
+        break ; Pega o primeiro que encontrar
     }
-    FileAppend(ultima_pasta, arquivo_memoria)
 
-    ; 2. Pede o ramo de atuação
-    tela_ramo := InputBox("Qual o ramo do cliente? (Ex: Lavanderia automatizada)", "Gerador de Prompt", "w450 h130")
-    
-    if (tela_ramo.Result = "Cancel" or tela_ramo.Value = "") {
-        return 
+    if (caminho_ini = "") {
+        MsgBox("Nenhum arquivo 'projeto*.ini' foi encontrado na pasta do cliente.", "Erro de Inicialização", "IconX")
+        return
     }
+
+    ; Extrai o ramo de atuação diretamente do INI (sem pop-ups)
+    ramo_cliente := IniRead(caminho_ini, "PROJETO", "ramo", "ERRO")
     
-    ramo_cliente := tela_ramo.Value
+    if (ramo_cliente = "ERRO" or ramo_cliente = "") {
+        MsgBox("O ramo não foi encontrado no arquivo INI.", "Erro de Leitura", "IconX")
+        return
+    }
 
     ; 3. Monta o prompt cirúrgico com a variável injetada
     prompt := "Meu cliente é uma " ramo_cliente ". Faça uma lista de concorrentes operacionais em São Paulo, SP (entre 25 a 30 concorrentes).`nRegra de ouro: Para que a automação encontre o local exato no Google Maps sem ambiguidade, você deve incluir obrigatoriamente o BAIRRO de cada unidade.`n`nO resultado deve ser apenas o texto, com um concorrente em cada linha, no seguinte formato:`n[Nome da Empresa] [Bairro] São Paulo SP`n`nExemplo:`nOMO Lavanderia Self-Service Vila Mariana São Paulo SP`nLavanderia 60 Minutos Pinheiros São Paulo SP`n`nEnvie a resposta obrigatoriamente dentro de um bloco de código."
@@ -46,12 +50,12 @@ F19:: {
     ; 4. Joga o prompt pronto para a memória (Área de Transferência)
     A_Clipboard := prompt
     
-    ; 5. Verifica se a aba da conversa já está aberta (pelo título parcial da janela)
-    SetTitleMatchMode(2) ; Permite encontrar a janela por qualquer parte do título
+    ; 5. Verifica se a aba da conversa já está aberta
+    SetTitleMatchMode(2)
     if WinExist("Google Gemini") {
-        WinActivate("Google Gemini") ; Puxa a janela existente para a frente
+        WinActivate("Google Gemini")
     } else {
-        Run("https://gemini.google.com/app/2267c167a9509945") ; Abre uma aba nova
+        Run("https://gemini.google.com/app/2267c167a9509945")
     }
     
     ; Aguarda 1 segundo para o navegador abrir e puxar o foco
@@ -69,10 +73,8 @@ F19:: {
     texto_instrucao := "Prompt copiado para a memória!`n`n1. Cole (Ctrl+V) no Gemini e dê Enter.`n2. Quando a IA terminar de escrever, clique em 'Copiar'.`n3. Pressione Ctrl + F19 para salvar."
     GuiInstrucoes.Add("Text", "Center w400", texto_instrucao)
     
-    ; Calcula a posição para grudar na direita (largura da tela menos 450 pixels da caixinha)
+    ; Calcula a posição para grudar na direita
     pos_x := A_ScreenWidth - 450
-    
-    ; Mostra a janela no canto superior direito matematicamente, sem roubar o foco (NoActivate)
     GuiInstrucoes.Show("AutoSize NoActivate x" pos_x " y50")
 }
 
@@ -82,33 +84,36 @@ F19:: {
 ^F19:: {
     global pasta_cliente, GuiInstrucoes
     
-    ; Trava de segurança: Verifica se o F19 foi usado antes
+    ; Se o F19 não foi rodado, tenta ler a memória novamente como trava de segurança
     if (pasta_cliente = "") {
-        MsgBox("Nenhuma pasta selecionada. Use o F19 primeiro para iniciar o processo.", "Aviso de Segurança", "IconX 262144")
-        return
+        caminho_memoria := A_ScriptDir "\memoria_pasta.txt"
+        if FileExist(caminho_memoria) {
+            pasta_cliente := Trim(FileRead(caminho_memoria, "UTF-8"))
+        } else {
+            MsgBox("Nenhuma pasta na memória. Use o F19 primeiro.", "Aviso de Segurança", "IconX")
+            return
+        }
     }
 
     ; 1. Pega o texto que você copiou do Gemini
     texto_limpo := A_Clipboard
     
-    ; 2. Limpeza cirúrgica: Remove blocos de código markdown se a IA os gerar
-    ; Como a crase é caractere de escape no AHK, precisamos dobrá-las (6 crases geram 3 reais)
+    ; 2. Limpeza cirúrgica: Remove blocos de código markdown
     texto_limpo := StrReplace(texto_limpo, "``````text", "")
     texto_limpo := StrReplace(texto_limpo, "``````", "")
-    texto_limpo := Trim(texto_limpo) ; Tira espaços em branco sobrando nas pontas
+    texto_limpo := Trim(texto_limpo)
 
     ; 3. Monta o caminho exato do arquivo
     caminho_txt := pasta_cliente "\lista_concorrentes.txt"
     
-    ; Prevenção: Se já existir uma lista velha, deleta
     if FileExist(caminho_txt) {
         FileDelete(caminho_txt)
     }
         
-    ; 4. Cria o arquivo injetando o texto limpo (em UTF-8 para não quebrar acentos)
+    ; 4. Cria o arquivo
     FileAppend(texto_limpo, caminho_txt, "UTF-8")
     
-    ; 5. Finalização e Destruição da GUI de instruções
+    ; 5. Finalização
     if GuiInstrucoes {
         try GuiInstrucoes.Destroy()
         GuiInstrucoes := ""
@@ -117,7 +122,6 @@ F19:: {
     SoundBeep(750, 500)
     MsgBox("Sucesso! 'lista_concorrentes.txt' salvo blindado na pasta do cliente.", "Passo 2 Concluído", "Iconi 262144")
     
-    ; Limpa a memória da pasta para o próximo uso
     pasta_cliente := ""
 }
 
@@ -127,7 +131,6 @@ F19:: {
 ; FASE 3: Injetor do Prompt de Análise (Atalho: Ctrl + F18)
 ; ==========================================
 ^F18:: {
-    ; Os parênteses permitem armazenar textos longos e manter a formatação original
     prompt_analise := "
     (
 Atuo com automação e inteligência de mercado para pequenos empresários. Preciso que você analise o arquivo 'reviews_concorrentes.txt' para extrair os padrões de comportamento dos clientes.
@@ -151,7 +154,7 @@ O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para edi
     )"
     
     A_Clipboard := prompt_analise
-    Sleep(100) ; Pausa de 1 milissegundo apenas para o Windows registrar a memória
-    Send("^v") ; Simula o Ctrl+V e cola tudo instantaneamente onde o seu cursor estiver
-    SoundBeep(800, 150) ; Feedback sonoro rápido e agudo de sucesso
+    Sleep(100)
+    Send("^v")
+    SoundBeep(800, 150)
 }
