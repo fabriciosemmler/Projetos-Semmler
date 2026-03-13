@@ -162,11 +162,11 @@ Atuo com automação e inteligência de mercado para pequenos empresários. Prec
 Gere um rascunho de relatório focado em clareza e valor estratégico. Esse texto será enviado via WhatsApp para minha sócia fazer a redação humana e a aprovação final.
 
 Diretrizes de formatação:
-
-Seja direto, analítico e use linguagem simples.
-Não use negrito ou formatações complexas (apenas texto puro).
-Separe o conteúdo claramente nos três blocos abaixo para facilitar a revisão dela.
-Siga exatamente esta estrutura de saída:
+- Seja direto, analítico e use linguagem simples.
+- Não use negrito ou formatações complexas (apenas texto puro).
+- REGRA DE OURO: É estritamente proibido incluir citações de fontes. Não insira números de referência, colchetes, [source] ou [cite] no meio do texto. O texto deve ser 100% limpo.
+- Separe o conteúdo claramente nos três blocos abaixo para facilitar a revisão dela.
+- Siga exatamente esta estrutura de saída:
 
 = INSIGHTS = [Escreva aqui 3 tópicos curtos apontando as maiores oportunidades e gargalos do mercado local]
 
@@ -174,7 +174,7 @@ Siga exatamente esta estrutura de saída:
 
 = MAIS CRITICADO = [Escreva aqui 1 parágrafo focado nas maiores falhas, frustrações e motivos de cancelamento nos concorrentes]
 
-O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para editar. Coloque o texto dentro de um bloco de código.
+O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para editar. Coloque a resposta inteira dentro de um bloco de código.
     )"
     
     A_Clipboard := prompt_analise

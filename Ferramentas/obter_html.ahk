@@ -60,27 +60,22 @@ F11:: {
         if (escola = "")
             continue
 
-        ; Retoma o foco clicando fisicamente dentro da barra de pesquisa
-        MouseClick("Left", 620, 210)
+        ; ==========================================
+        ; NAVEGAÇÃO DIRETA (VIA URL)
+        ; ==========================================
+        ; Foca na barra de endereços do navegador (Ctrl+L)
+        Send("^l")
         Sleep(300)
-
-        ; Seleciona o que estiver na barra e deleta
-        Send("^a")
-        Sleep(200)
-        Send("{Delete}")
-        Sleep(200)
         
-        ; ==========================================
-        ; Cola o texto (NOME CURADO) e pesquisa direto
-        ; ==========================================
+        ; Digita a URL exata do concorrente
         SendText(escola)
-        Sleep(500)
+        Sleep(300)
         
-        ; Aperta Enter para pesquisar direto (o Maps já abre o local exato)
+        ; Aperta Enter para ir direto para o local sem passar pela pesquisa
         Send("{Enter}")
         
-        ; Aguarda o local carregar
-        Sleep(3500)
+        ; Aguarda o local carregar completamente
+        Sleep(4000)
 
         ; ==========================================
         ; O Rastreador de Cor (Ctrl+F)
@@ -228,4 +223,36 @@ Esc & F11:: {
     Sleep(100)
     SoundBeep(400, 300) ; Toca o bipe grave de novo (sirene de parada)
     ExitApp ; Mata o processo do script imediatamente
+}
+
+; ==========================================
+; FASE 3: Injetor do Prompt de Análise (Atalho: Ctrl + F18)
+; ==========================================
+^F18:: {
+    prompt_analise := "
+    (
+Atuo com automação e inteligência de mercado para pequenos empresários. Preciso que você analise o arquivo 'reviews_concorrentes.txt' para extrair os padrões de comportamento dos clientes.
+
+Gere um rascunho de relatório focado em clareza e valor estratégico. Esse texto será enviado via WhatsApp para minha sócia fazer a redação humana e a aprovação final.
+
+Diretrizes de formatação:
+- Seja direto, analítico e use linguagem simples.
+- Não use negrito ou formatações complexas (apenas texto puro).
+- REGRA DE OURO: É estritamente proibido incluir citações de fontes. Não insira números de referência, colchetes, [source] ou [cite] no meio do texto. O texto deve ser 100% limpo.
+- Separe o conteúdo claramente nos três blocos abaixo para facilitar a revisão dela.
+- Siga exatamente esta estrutura de saída:
+
+= INSIGHTS = [Escreva aqui 3 tópicos curtos apontando as maiores oportunidades e gargalos do mercado local]
+
+= MAIS ELOGIADO = [Escreva aqui 1 parágrafo focado no que os clientes mais valorizam e elogiam nos concorrentes]
+
+= MAIS CRITICADO = [Escreva aqui 1 parágrafo focado nas maiores falhas, frustrações e motivos de cancelamento nos concorrentes]
+
+O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para editar. Coloque a resposta inteira dentro de um bloco de código.
+    )"
+    
+    A_Clipboard := prompt_analise
+    Sleep(100)
+    Send("^v")
+    SoundBeep(800, 150)
 }
