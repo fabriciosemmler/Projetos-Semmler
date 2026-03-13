@@ -1,12 +1,28 @@
 import os
 import re
 from collections import Counter
+import glob
+import configparser
 
-def descobrir_palavras_chave(arquivo_entrada, arquivo_saida, top_n=3):
+def descobrir_palavras_chave(arquivo_entrada, arquivo_saida, pasta_cliente, top_n=3):
     # 1. Filtro de ruído cirúrgico (Stop Words)
     # Palavras que não agregam valor ao nome do negócio
     stop_words = {"de", "da", "do", "das", "dos", "e", "em", "na", "no", 
                   "ltda", "me", "cia", "o", "a", "os", "as", "com", "para"}
+
+    # --- NOVIDADE: Filtro Geográfico Dinâmico ---
+    # Busca o arquivo INI curinga na pasta do cliente
+    arquivos_ini = glob.glob(os.path.join(pasta_cliente, "projeto*.ini"))
+    if arquivos_ini:
+        config = configparser.ConfigParser()
+        # Lê o primeiro INI encontrado com proteção de acentos
+        config.read(arquivos_ini[0], encoding='utf-8')
+        if config.has_section("PROJETO") and config.has_option("PROJETO", "cidade"):
+            cidade = config.get("PROJETO", "cidade").lower()
+            # Quebra o nome da cidade (ex: "são paulo") isolando cada palavra
+            palavras_cidade = set(re.findall(r'\b[a-zà-ú]+\b', cidade))
+            # Injeta as palavras da cidade na lista de ruído
+            stop_words.update(palavras_cidade)
 
     try:
         # 2. Leitura com proteção de caracteres (UTF-8 evita erros de acento)
@@ -50,7 +66,7 @@ if __name__ == "__main__":
         caminho_saida = os.path.join(pasta_cliente, "palavras_chave.txt")
         
         # Executa o motor na pasta correta
-        descobrir_palavras_chave(caminho_entrada, caminho_saida, top_n=3)
+        descobrir_palavras_chave(caminho_entrada, caminho_saida, pasta_cliente, top_n=3)
         
     except FileNotFoundError:
         print("Arquivo memoria_pasta.txt não encontrado. Execute o script AHK primeiro.")
