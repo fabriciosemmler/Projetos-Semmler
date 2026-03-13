@@ -33,13 +33,13 @@ def salvar_e_iniciar():
 
         # --- MUDANÇA CIRÚRGICA: Criação do Banco de Dados INI ---
         config = configparser.ConfigParser()
-        config['PROJETO'] = {
+        config[f'PROJETO {cliente}'] = {
             'cliente': cliente,
             'ramo': ramo,
             'cidade': cidade
         }
         
-        caminho_ini = os.path.join(pasta_projeto, "projeto.ini")
+        caminho_ini = os.path.join(pasta_projeto, f"projeto {cliente}.ini")
         with open(caminho_ini, 'w', encoding='utf-8') as configfile:
             config.write(configfile)
         # ---------------------------------------------------------
