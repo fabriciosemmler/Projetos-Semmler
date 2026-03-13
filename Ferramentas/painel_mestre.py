@@ -41,28 +41,55 @@ def acao_gerar_pdf():
 # CONSTRUÇÃO DO PAINEL (Interface minimalista)
 # ==========================================
 root = tk.Tk()
-root.title("Inteligência de Mercado - Painel Mestre")
-root.geometry("400x350")
+root.title("Semmler Micro-Automações - Painel Mestre")
+
+# --- Centralização Cirúrgica da Janela ---
+largura_janela = 450
+altura_janela = 450
+largura_tela = root.winfo_screenwidth()
+altura_tela = root.winfo_screenheight()
+
+pos_x = int((largura_tela / 2) - (largura_janela / 2))
+pos_y = int((altura_tela / 2) - (altura_janela / 2))
+
+root.geometry(f"{largura_janela}x{altura_janela}+{pos_x}+{pos_y}")
+# -----------------------------------------
+
 root.resizable(False, False)
-root.configure(padx=20, pady=20, bg="#f0f0f0")
+root.configure(padx=20, pady=15, bg="#f0f0f0")
 
 # Título Principal
-tk.Label(root, text="Esteira de Automação", font=("Segoe UI", 16, "bold"), bg="#f0f0f0").pack(pady=(0, 10))
+tk.Label(root, text="Esteira de Automação", font=("Segoe UI", 16, "bold"), bg="#f0f0f0").pack(pady=(0, 5))
 
 # Status do Cliente (Painel Inteligente)
 var_status = tk.StringVar()
 atualizar_status()
 label_status = tk.Label(root, textvariable=var_status, font=("Segoe UI", 10, "italic"), fg="#0052cc", bg="#f0f0f0")
-label_status.pack(pady=(0, 20))
+label_status.pack(pady=(0, 15))
 
-# Botões de Ação (A esteira de montagem)
-largura_botao = 30
-tk.Button(root, text="1. Iniciar Novo Projeto", font=("Segoe UI", 10), width=largura_botao, command=acao_iniciar).pack(pady=5)
-tk.Button(root, text="2. Abrir Pasta do Cliente (TXTs)", font=("Segoe UI", 10), width=largura_botao, command=acao_abrir_pasta).pack(pady=5)
-tk.Button(root, text="3. Armar Motor de Coleta (AHK)", font=("Segoe UI", 10), width=largura_botao, command=acao_ligar_ahk).pack(pady=5)
-tk.Button(root, text="4. Emitir Relatório (PDF)", font=("Segoe UI", 10, "bold"), width=largura_botao, bg="#4CAF50", fg="white", command=acao_gerar_pdf).pack(pady=15)
+# ==========================================
+# BOTÕES E INSTRUÇÕES
+# ==========================================
+largura_botao = 35
+fonte_instrucao = ("Segoe UI", 8, "italic")
+cor_instrucao = "#555555"
 
-# Botão para atualizar a memória manualmente, caso precise
+# Botão 1
+tk.Button(root, text="1. Iniciar Novo Projeto", font=("Segoe UI", 10), width=largura_botao, command=acao_iniciar).pack(pady=(5, 5))
+
+# Botão 2 + Instrução
+tk.Button(root, text="2. Abrir Pasta do Cliente", font=("Segoe UI", 10), width=largura_botao, command=acao_abrir_pasta).pack(pady=(15, 0))
+tk.Label(root, text="↳ Copiar URLs do Google Maps para o lista_concorrentes.txt", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 5))
+
+# Botão 3 + Instruções
+tk.Button(root, text="3. Armar Motor de Coleta (AHK)", font=("Segoe UI", 10), width=largura_botao, command=acao_ligar_ahk).pack(pady=(15, 0))
+tk.Label(root, text="↳ Enviar o rascunho da IA para a redatora via WhatsApp", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 0))
+tk.Label(root, text="↳ Colar o texto aprovado no redacao_final.txt", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 5))
+
+# Botão 4
+tk.Button(root, text="4. Emitir Relatório (PDF)", font=("Segoe UI", 10, "bold"), width=largura_botao, bg="#4CAF50", fg="white", command=acao_gerar_pdf).pack(pady=(20, 5))
+
+# Botão para atualizar a memória manualmente
 tk.Button(root, text="↻ Atualizar Status", font=("Segoe UI", 8), bd=0, bg="#f0f0f0", fg="gray", command=atualizar_status).pack(side="bottom")
 
 root.mainloop()
