@@ -41,7 +41,7 @@ F19:: {
     ramo_cliente := tela_ramo.Value
 
     ; 3. Monta o prompt cirúrgico com a variável injetada
-    prompt := "Meu cliente é uma " ramo_cliente ". Faça uma lista de concorrentes operacionais em São Paulo, SP (mais de 10 concorrentes).`nRegra de ouro: Para que a automação encontre o local exato no Google Maps sem ambiguidade, você deve incluir obrigatoriamente o BAIRRO de cada unidade.`n`nO resultado deve ser apenas o texto, com um concorrente em cada linha, no seguinte formato:`n[Nome da Empresa] [Bairro] São Paulo SP`n`nExemplo:`nOMO Lavanderia Self-Service Vila Mariana São Paulo SP`nLavanderia 60 Minutos Pinheiros São Paulo SP`n`nEnvie a resposta obrigatoriamente dentro de um bloco de código."
+    prompt := "Meu cliente é uma " ramo_cliente ". Faça uma lista de concorrentes operacionais em São Paulo, SP (entre 25 a 30 concorrentes).`nRegra de ouro: Para que a automação encontre o local exato no Google Maps sem ambiguidade, você deve incluir obrigatoriamente o BAIRRO de cada unidade.`n`nO resultado deve ser apenas o texto, com um concorrente em cada linha, no seguinte formato:`n[Nome da Empresa] [Bairro] São Paulo SP`n`nExemplo:`nOMO Lavanderia Self-Service Vila Mariana São Paulo SP`nLavanderia 60 Minutos Pinheiros São Paulo SP`n`nEnvie a resposta obrigatoriamente dentro de um bloco de código."
 
     ; 4. Joga o prompt pronto para a memória (Área de Transferência)
     A_Clipboard := prompt
