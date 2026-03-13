@@ -122,3 +122,36 @@ F19:: {
 }
 
 !v::GuiInstrucoes.Destroy()
+
+; ==========================================
+; FASE 3: Injetor do Prompt de Análise (Atalho: Ctrl + F18)
+; ==========================================
+^F18:: {
+    ; Os parênteses permitem armazenar textos longos e manter a formatação original
+    prompt_analise := "
+    (
+Atuo com automação e inteligência de mercado para pequenos empresários. Preciso que você analise o arquivo 'reviews_concorrentes.txt' para extrair os padrões de comportamento dos clientes.
+
+Gere um rascunho de relatório focado em clareza e valor estratégico. Esse texto será enviado via WhatsApp para minha sócia fazer a redação humana e a aprovação final.
+
+Diretrizes de formatação:
+
+Seja direto, analítico e use linguagem simples.
+Não use negrito ou formatações complexas (apenas texto puro).
+Separe o conteúdo claramente nos três blocos abaixo para facilitar a revisão dela.
+Siga exatamente esta estrutura de saída:
+
+= INSIGHTS = [Escreva aqui 3 tópicos curtos apontando as maiores oportunidades e gargalos do mercado local]
+
+= MAIS ELOGIADO = [Escreva aqui 1 parágrafo focado no que os clientes mais valorizam e elogiam nos concorrentes]
+
+= MAIS CRITICADO = [Escreva aqui 1 parágrafo focado nas maiores falhas, frustrações e motivos de cancelamento nos concorrentes]
+
+O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para editar. Coloque o texto dentro de um bloco de código.
+    )"
+    
+    A_Clipboard := prompt_analise
+    Sleep(100) ; Pausa de 1 milissegundo apenas para o Windows registrar a memória
+    Send("^v") ; Simula o Ctrl+V e cola tudo instantaneamente onde o seu cursor estiver
+    SoundBeep(800, 150) ; Feedback sonoro rápido e agudo de sucesso
+}
