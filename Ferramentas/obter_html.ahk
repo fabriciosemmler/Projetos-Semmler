@@ -39,26 +39,6 @@ F11:: {
     ; Fatia as linhas aqui no início para o loop usar mais tarde
     linhas := StrSplit(texto_completo, "`n", "`r")
 
-    ; ==========================================
-    ; NOVIDADE 8: Parametrização Dinâmica (Lendo palavras_chave.txt)
-    ; ==========================================
-    caminho_palavras := pasta_cliente "\palavras_chave.txt"
-    
-    if not FileExist(caminho_palavras) {
-        MsgBox("O arquivo 'palavras_chave.txt' não foi encontrado. Rode a extração de keywords primeiro.", "Aviso de Segurança", "Iconi")
-        return
-    }
-    
-    texto_palavras := FileRead(caminho_palavras, "UTF-8")
-    
-    if (Trim(texto_palavras) = "") {
-        MsgBox("O arquivo 'palavras_chave.txt' está vazio.", "Aviso de Segurança", "Iconi")
-        return 
-    }
-    
-    ; Fila de palavras: Separa o conteúdo do arquivo pelas vírgulas
-    lista_palavras := StrSplit(texto_palavras, ",")
-
     ; Trava as coordenadas do mouse e do buscador de pixels para a área útil do navegador (Client)
     CoordMode("Mouse", "Client")
     CoordMode("Pixel", "Client") 
@@ -91,56 +71,16 @@ F11:: {
         Sleep(200)
         
         ; ==========================================
-        ; Cola o texto e pega do AUTOCOMPLETAR
+        ; Cola o texto (NOME CURADO) e pesquisa direto
         ; ==========================================
         SendText(escola)
+        Sleep(500)
         
-        ; Aguarda o Google abrir o menu suspenso de sugestões
-        Sleep(1500) 
-        
-        ; Aperta para baixo para selecionar a primeira sugestão (o local exato, sem anúncios)
-        Send("{Down}")
-        Sleep(300)
-        
-        ; Aperta Enter para entrar direto na página do local
+        ; Aperta Enter para pesquisar direto (o Maps já abre o local exato)
         Send("{Enter}")
         
-        ; Aguarda 3 segundos carregando o local
-        Sleep(3000)
-
-        ; ==========================================
-        ; NOVIDADE 7: Validação de Nicho (Radar Anti-Ruído Blindado)
-        ; ==========================================
-        A_Clipboard := "" ; Limpa a memória
-        
-        Send("^a") ; Seleciona todo o texto da tela
-        Sleep(300)
-        Send("^c") ; Copia para a memória
-        Sleep(300)
-        Send("{Esc}") ; Tira a marcação azul da tela
-        Sleep(300)
-        
-        passou_no_teste := false ; Começa assumindo que é o local errado
-        
-        ; Força todo o texto copiado da tela para letras minúsculas
-        texto_copiado := StrLower(A_Clipboard)
-        
-        ; Verifica palavra por palavra da sua lista gerada pelo Python
-        For idx, palavra in lista_palavras {
-            ; Tira espaços nas pontas e força a palavra-chave para minúscula também
-            palavra_limpa := StrLower(Trim(palavra)) 
-            
-            ; Se encontrar qualquer uma das palavras, aprova o local e para de procurar
-            if InStr(texto_copiado, palavra_limpa) {
-                passou_no_teste := true
-                break 
-            }
-        }
-
-        ; Se rodou toda a lista e não achou NENHUMA palavra, é lixo. Pula pro próximo.
-        if not passou_no_teste {
-            continue 
-        }
+        ; Aguarda o local carregar
+        Sleep(3500)
 
         ; ==========================================
         ; O Rastreador de Cor (Ctrl+F)
@@ -243,9 +183,20 @@ F11:: {
         Sleep(5000)
     }
     
+    ; ==========================================
+    ; MÓDULO DE INTEGRAÇÃO: Dispara o extrator de avaliações (Python)
+    ; ==========================================
+    caminho_python := A_ScriptDir "\extrair_avaliacoes.py"
+    if FileExist(caminho_python) {
+        ; Executa o Python de forma invisível e aguarda ele terminar
+        RunWait("py `"" caminho_python "`"", A_ScriptDir, "Hide")
+    } else {
+        MsgBox("Aviso: 'extrair_avaliacoes.py' não encontrado na pasta de Ferramentas.", "Alerta de Integração", "Icon!")
+    }
+
     ; 4. Finalização: Alerta visual e sonoro de conclusão
     SoundBeep(750, 500) ; Toca um bipe de 750Hz por meio segundo
-    ExibirAvisoGrande("Extração Concluída!")
+    ExibirAvisoGrande("Processo 100% Concluído!`nO AutoHotkey baixou as páginas e o Python extraiu as avaliações.")
 }
 
 ; ==========================================

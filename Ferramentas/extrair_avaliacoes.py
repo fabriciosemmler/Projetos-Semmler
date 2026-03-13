@@ -1,26 +1,24 @@
 import os
-import tkinter as tk
-from tkinter import filedialog
 from bs4 import BeautifulSoup
 
 def extrair_dados():
     # ==========================================
-    # NOVIDADE: Seleção Dinâmica da Pasta do Cliente
+    # NOVIDADE: Seleção Dinâmica (Via Memória do Sistema)
     # ==========================================
-    # Inicia a janela invisível e força ela para a frente de tudo
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes('-topmost', True)
+    # Descobre o diretório exato onde este script .py está salvo
+    diretorio_script = os.path.dirname(os.path.abspath(__file__))
+    caminho_memoria = os.path.join(diretorio_script, "memoria_pasta.txt")
     
-    # Abre o seletor pedindo a pasta principal do cliente
-    pasta_cliente = filedialog.askdirectory(title="Selecione a pasta do cliente (ex: Acqua Lavanderia)")
-    
-    # Limpa a memória da janela
-    root.destroy()
-    
-    # Se você cancelar a janela, aborta o script
-    if not pasta_cliente:
-        print("Operação cancelada.")
+    # Lê o caminho da pasta do cliente salvo pelo processo anterior
+    try:
+        with open(caminho_memoria, "r", encoding="utf-8") as f:
+            pasta_cliente = f.read().strip()
+    except FileNotFoundError:
+        print("Erro: Arquivo 'memoria_pasta.txt' não encontrado. Rode as etapas anteriores primeiro.")
+        return
+
+    if not os.path.exists(pasta_cliente):
+        print(f"Erro: A pasta registrada na memória não existe mais: {pasta_cliente}")
         return
 
     # Constrói os caminhos blindados baseados na pasta escolhida
