@@ -37,21 +37,28 @@ F19:: {
     }
 
     ; ==========================================
-    ; AJUSTE CIRÚRGICO: Leitura do INI com blindagem UTF-8
+    ; AJUSTE CIRÚRGICO: Leitura do INI (Ramo e Cidade blindados em UTF-8)
     ; ==========================================
     ; Lê o arquivo inteiro forçando a lente correta (UTF-8)
     conteudo_ini := FileRead(caminho_ini, "UTF-8")
     
-    ; Pescador RegEx: Procura a linha "ramo = " e captura o que vem depois
-    if RegExMatch(conteudo_ini, "im)^ramo\s*=\s*(.*)", &captura) {
-        ramo_cliente := Trim(captura[1])
+    ; Pescador RegEx 1: Procura a linha "ramo = " e captura
+    if RegExMatch(conteudo_ini, "im)^ramo\s*=\s*(.*)", &captura_ramo) {
+        ramo_cliente := Trim(captura_ramo[1])
     } else {
         MsgBox("O ramo não foi encontrado no arquivo INI.", "Erro de Leitura", "IconX")
         return
     }
 
-    ; 3. Monta o prompt cirúrgico com a variável injetada
-    prompt := "Meu cliente é uma " ramo_cliente ". Faça uma lista de concorrentes operacionais em São Paulo, SP (entre 25 a 30 concorrentes).`nRegra de ouro: Para que a automação encontre o local exato no Google Maps sem ambiguidade, você deve incluir obrigatoriamente o BAIRRO de cada unidade.`n`nO resultado deve ser apenas o texto, com um concorrente em cada linha, no seguinte formato:`n[Nome da Empresa] [Bairro] São Paulo SP`n`nExemplo:`nOMO Lavanderia Self-Service Vila Mariana São Paulo SP`nLavanderia 60 Minutos Pinheiros São Paulo SP`n`nEnvie a resposta obrigatoriamente dentro de um bloco de código."
+    ; Pescador RegEx 2: Procura a linha "cidade = " e captura
+    if RegExMatch(conteudo_ini, "im)^cidade\s*=\s*(.*)", &captura_cidade) {
+        cidade_cliente := Trim(captura_cidade[1])
+    } else {
+        cidade_cliente := "São Paulo SP" ; Fallback de segurança caso a chave não exista
+    }
+
+    ; 3. Monta o prompt cirúrgico com as variáveis injetadas
+    prompt := "Meu cliente é do ramo de " ramo_cliente " em " cidade_cliente ". Faça uma lista de concorrentes operacionais (entre 25 a 30 concorrentes).`nRegra de ouro: Mescle entre grandes marcas e pequenos negócios locais.`n`nO resultado deve ser apenas o texto, com um concorrente em cada linha, no seguinte formato:`n[Nome da Empresa] " cidade_cliente "`n`nExemplo:`nMarca Famosa " cidade_cliente "`nNegócio Local " cidade_cliente "`n`nEnvie a resposta obrigatoriamente dentro de um bloco de código."
 
     ; 4. Joga o prompt pronto para a memória (Área de Transferência)
     A_Clipboard := prompt
@@ -119,6 +126,17 @@ F19:: {
     ; 4. Cria o arquivo
     FileAppend(texto_limpo, caminho_txt, "UTF-8")
     
+    ; ==========================================
+    ; MÓDULO DE INTEGRAÇÃO: Dispara o extrator de palavras-chave
+    ; ==========================================
+    caminho_python := A_ScriptDir "\extrair_keywords.py"
+    if FileExist(caminho_python) {
+        ; Executa o Python de forma invisível e aguarda ele terminar
+        RunWait("python `"" caminho_python "`"", A_ScriptDir, "Hide")
+    } else {
+        MsgBox("Aviso: 'extrair_keywords.py' não encontrado na pasta de Ferramentas.", "Alerta de Integração", "Icon!")
+    }
+
     ; 5. Finalização
     if GuiInstrucoes {
         try GuiInstrucoes.Destroy()
@@ -126,7 +144,7 @@ F19:: {
     }
     
     SoundBeep(750, 500)
-    MsgBox("Sucesso! 'lista_concorrentes.txt' salvo blindado na pasta do cliente.", "Passo 2 Concluído", "Iconi 262144")
+    MsgBox("Sucesso Absoluto!`n`n1. 'lista_concorrentes.txt' salvo.`n2. 'palavras_chave.txt' extraído com sucesso.", "Passo 2 Concluído", "Iconi 262144")
     
     pasta_cliente := ""
 }
