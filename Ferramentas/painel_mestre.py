@@ -125,13 +125,12 @@ tk.Label(root, text="↳ Copiar URLs do Google Maps para o lista_concorrentes.tx
 
 # Passo 3
 tk.Button(root, text="3. Armar Motor de Coleta (AHK)", font=("Segoe UI", 10), width=largura_botao, command=acao_ligar_ahk).pack(pady=(15, 5))
-# A ação humana de apertar F11 é intuitiva, mantemos limpo.
 
-# Passo 4 + Instruções
+# --- AJUSTE CIRÚRGICO: Passo 4 Simplificado ---
 tk.Button(root, text="4. Extração de Inteligência (Gemini)", font=("Segoe UI", 10), width=largura_botao, command=acao_abrir_gemini).pack(pady=(15, 0))
-tk.Label(root, text="↳ Fazer upload do reviews_concorrentes.txt e apertar Ctrl + F18", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 0))
-tk.Label(root, text="↳ Copiar o rascunho, limpar c/ Ctrl + Alt + L e enviar p/ redatora", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 0))
-tk.Label(root, text="↳ Colar o texto aprovado no redacao_final.txt", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 5))
+tk.Label(root, text="↳ Enviar arquivo reviews_concorrentes.txt e apertar Ctrl + F18", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 0))
+tk.Label(root, text="↳ Copiar o rascunho da IA e apertar F20 (Salva automático)", font=fonte_instrucao, fg=cor_instrucao, bg="#f0f0f0").pack(pady=(0, 5))
+# ----------------------------------------------
 
 # Passo 5
 tk.Button(root, text="5. Emitir Relatório (PDF e Whatsapp)", font=("Segoe UI", 10, "bold"), width=largura_botao, bg="#4CAF50", fg="white", command=acao_gerar_pdf).pack(pady=(20, 5))
