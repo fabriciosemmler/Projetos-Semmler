@@ -39,13 +39,13 @@ def salvar_e_iniciar():
             'cidade': cidade
         }
         
-        caminho_ini = os.path.join(pasta_projeto, f"projeto {cliente}.ini")
+        caminho_ini = os.path.join(pasta_projeto, f"projeto {cliente.lower()}.ini")
         with open(caminho_ini, 'w', encoding='utf-8') as configfile:
             config.write(configfile)
         # ---------------------------------------------------------
 
         # Sucesso e encerramento cirúrgico
-        messagebox.showinfo("Semmler Automações", f"Projeto '{cliente}' inicializado com sucesso!\nO banco de dados 'projeto.ini' foi criado.")
+        messagebox.showinfo("Semmler Automações", f"Projeto '{cliente}' inicializado com sucesso!\nO banco de dados 'projeto {cliente.lower()}.ini' foi criado.")
         root.destroy()
 
     except Exception as e:
