@@ -61,6 +61,16 @@ F11:: {
             continue
 
         ; ==========================================
+        ; TRAVA DE SEGURANÇA MÁXIMA (O "Faxineiro")
+        ; ==========================================
+        ; Se por algum erro bizarro a janela "Salvar como" do ciclo anterior ficou aberta, extermina ela.
+        ; ahk_class #32770 é o código universal do Windows para caixas de diálogo (Salvar/Abrir).
+        if WinExist("ahk_class #32770") {
+            WinClose("ahk_class #32770")
+            Sleep(500)
+        }
+
+        ; ==========================================
         ; NAVEGAÇÃO DIRETA (VIA URL)
         ; ==========================================
         ; Foca na barra de endereços do navegador (Ctrl+L)
@@ -125,7 +135,7 @@ F11:: {
             }
 
             ; ==========================================
-            ; NOVIDADE 4: Salvar Página (Ctrl + S)
+            ; NOVIDADE 4: Salvar Página (Ctrl + S) COM BLINDAGEM
             ; ==========================================
             ; Prepara o nome do arquivo direcionando para a nova subpasta
             caminho_salvamento := pasta_destino "\local " indice ".html"
@@ -136,12 +146,24 @@ F11:: {
 
             ; Chama o Salvar Como
             Send("^s")
-            Sleep(1500) ; Aguarda a janela do Windows abrir
             
-            ; Digita o caminho completo para garantir que caia na pasta certa
-            SendText(caminho_salvamento)
-            Sleep(500)
-            Send("{Enter}")
+            ; AJUSTE CIRÚRGICO: Fim da "Espera Cega" (Substitui o antigo Sleep(1500))
+            ; O script aguarda até 15 segundos pela janela de salvamento e SÓ AVANÇA quando ela estiver ativa
+            if WinWaitActive("ahk_class #32770", , 15) {
+                Sleep(800) ; Respiro de segurança para o Windows focar na caixa de texto
+                
+                ; Digita o caminho completo para garantir que caia na pasta certa
+                SendText(caminho_salvamento)
+                Sleep(500)
+                Send("{Enter}")
+                
+                ; A SEGUNDA TRAVA: Cruza os braços e SÓ AVANÇA quando a janela fechar de verdade
+                WinWaitClose("ahk_class #32770", , 15)
+            } else {
+                ; Se a internet ou o Chrome travarem e a janela não abrir, aperta Esc para desbugar e pula
+                Send("{Esc}")
+                Sleep(300)
+            }
             
             ; ==========================================
             ; NOVIDADE 5: Espera Dinâmica (Teste da Porta Trancada)
@@ -256,3 +278,29 @@ O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para edi
     Send("^v")
     SoundBeep(800, 150)
 }
+
+; ==========================================
+; FASE 4: Faxineiro de Citações para WhatsApp
+; ==========================================
+^!l:: {
+    texto_sujo := A_Clipboard
+    
+    ; 1. Varredura RegEx: O '.*?' captura absolutamente tudo (números, vírgulas, espaços) até fechar o colchete
+    texto_limpo := RegExReplace(texto_sujo, "\[" "source:.*?\]", "")
+    texto_limpo := RegExReplace(texto_limpo, "\[" "cite:.*?\]", "")
+    
+    ; Pega também os casos onde a IA joga só os números com vírgula, tipo [1, 2, 3]
+    texto_limpo := RegExReplace(texto_limpo, "\[[0-9,\s]+\]", "")
+    
+    ; 2. Limpeza de resíduos: Remove espaços duplos que ficaram no lugar das citações
+    texto_limpo := RegExReplace(texto_limpo, " {2,}", " ")
+    
+    ; 3. Devolve o texto cristalino para a memória
+    A_Clipboard := Trim(texto_limpo)
+    
+    ; 4. Feedback sonoro duplo (Aviso de que a limpeza terminou)
+    SoundBeep(900, 150)
+    Sleep(50)
+    SoundBeep(1200, 150)
+}
+
