@@ -24,7 +24,7 @@ Diretrizes de formatação:
 
 = MAIS CRITICADO = [Escreva aqui 1 parágrafo focado nas maiores falhas, frustrações e motivos de cancelamento nos concorrentes]
 
-O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para editar. Coloque a resposta inteira dentro de um bloco de código.
+O texto deve ser bonito, simples e fácil de copiar e colar no whatsapp para editar. Coloque a resposta inteira dentro de um bloco de código. Use formatação UTF-8.
     )"
     
     A_Clipboard := prompt_analise

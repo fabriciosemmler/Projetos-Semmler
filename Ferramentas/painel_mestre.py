@@ -80,8 +80,19 @@ def acao_abrir_gemini():
     else:
         messagebox.showwarning("Aviso", "O script 'assistente_gemini.ahk' não foi encontrado. Os atalhos podem não funcionar.")
 
-    # 2. Abre o navegador na sua conta
-    webbrowser.open("https://gemini.google.com/app/2267c167a9509945")
+    # 2. Abre o navegador no perfil semmlerautomacoes@gmail.com
+    url = "https://gemini.google.com/app/2267c167a9509945"
+    
+    # Caminho padrão de instalação do Chrome no Windows:
+    caminho_chrome = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    
+    # ATENÇÃO: Substitua "Profile 1" pelo nome correto da pasta do seu perfil (instruções abaixo)
+    nome_da_pasta_do_perfil = "Profile 5" 
+    
+    try:
+        subprocess.Popen([caminho_chrome, f'--profile-directory={nome_da_pasta_do_perfil}', url])
+    except FileNotFoundError:
+        messagebox.showerror("Erro", "O executável do Chrome não foi encontrado no caminho especificado.")
 
 def acao_gerar_pdf():
     # Dispara o motor de relatório
