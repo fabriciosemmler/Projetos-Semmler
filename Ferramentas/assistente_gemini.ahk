@@ -9,7 +9,7 @@
     (
 Atuo com automação e inteligência de mercado para pequenos empresários. Preciso que você analise o arquivo 'reviews_concorrentes.txt' para extrair os padrões de comportamento dos clientes.
 
-Gere um rascunho de relatório focado em clareza e valor estratégico. Esse texto será enviado via WhatsApp para minha sócia fazer a redação humana e a aprovação final.
+Gere um relatório focado em clareza e valor estratégico. Esse texto será enviado diretamente para o cliente final.
 
 Diretrizes de formatação:
 - Seja direto e use linguagem simples e analítica.
