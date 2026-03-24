@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 import threading
 import asyncio
@@ -71,22 +72,38 @@ async def executar_contagem():
         except:
             continue
 
-    # --- FASE 2: VIGÍLIA ATIVA (A 3ª MÚSICA) ---
-    print("⏳ Iniciando Vigília Ativa na 3ª música...")
+# --- VIGÍLIA ATIVA (Faltando 1 segundo) ---
+    ultima_pos = -1
+    tempo_leitura = time.time()
+
     while True:
-        await asyncio.sleep(2)
+        await asyncio.sleep(0.5) # Ciclo rápido para não perder o timing
         try:
             timeline = sessao.get_timeline_properties()
             total = timeline.end_time.total_seconds()
-            atual = timeline.position.total_seconds()
+            pos_oficial = timeline.position.total_seconds()
+            
+            # Sincroniza o relógio apenas quando o Spotify decide atualizar a posição real
+            if pos_oficial != ultima_pos:
+                ultima_pos = pos_oficial
+                tempo_leitura = time.time()
+
+            # Compensamos a preguiça do Spotify somando o tempo do sistema:
+            playback = sessao.get_playback_info()
+            if playback and playback.playback_status == 4: # 4 = Playing
+                atual = pos_oficial + (time.time() - tempo_leitura)
+            else:
+                atual = pos_oficial
+                tempo_leitura = time.time() # Congela o relógio se estiver pausado
+
             restante = total - atual
 
-            if restante <= 4:
-                if restante > 0.5:
-                    await asyncio.sleep(restante - 0.3)
+            if total > 0 and restante <= 4.0:
+                if restante > 1.0:
+                    await asyncio.sleep(restante - 1.0)
                 
                 await sessao.try_toggle_play_pause_async()
-                exibir_aviso_grande("⏸️ 3 Músicas! Pausado.")
+                exibir_aviso_grande("⏸️ Pausado!")
                 await asyncio.sleep(3.5)
                 break
         except:
