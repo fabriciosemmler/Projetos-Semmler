@@ -1,10 +1,13 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+global ModoParagrafo := false
+
 ; Código minificado SEM a palavra "javascript:" no início
 global jsCode := "(function(){const elements=[...document.querySelectorAll('.entry-content p, .entry-content li, .cpp-image-wrapper img, article p, article li, article img, main p, main li, main img, .content p, .post p, p')].filter(el=>!el.closest('noscript,header,footer,aside,iframe,.adsbygoogle,[id*=google_ads],[class*=ad-container],[class*=ad-slot],[id*=carbonads]')&&el.textContent.trim()!=='Please enable JavaScript'&&(el.tagName==='IMG'||el.textContent.trim().length>0));if(elements.length===0)return;const stage=document.createElement('div');stage.id='reading-stage';Object.assign(stage.style,{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',backgroundColor:'#000',color:'#fff',zIndex:100000,display:'flex',alignItems:'center',justifyContent:'center',padding:'5vh 10vw',boxSizing:'border-box',overflow:'hidden'});document.body.style.overflow='hidden';document.body.appendChild(stage);let currentIndex=parseInt(localStorage.getItem('prgf_'+location.pathname))||0;if(currentIndex>=elements.length)currentIndex=0;function autoFit(element){let fontSize=72;element.style.fontSize=fontSize+'px';element.style.lineHeight='1.4';const maxAllowedHeight=window.innerHeight*0.85;while(element.scrollHeight>maxAllowedHeight&&fontSize>14){fontSize-=2;element.style.fontSize=fontSize+'px';}}function render(){localStorage.setItem('prgf_'+location.pathname,currentIndex);stage.innerHTML='';const original=elements[currentIndex];if(original.tagName==='IMG'){const img=document.createElement('img');img.src=original.getAttribute('data-src')||original.getAttribute('data-lazy-src')||original.src;Object.assign(img.style,{maxWidth:'100%',maxHeight:'85vh',objectFit:'contain',margin:'auto',display:'block'});stage.appendChild(img);}else{const clone=original.cloneNode(true);Object.assign(clone.style,{display:(clone.tagName==='LI')?'list-item':'block',width:'100%',maxWidth:'1000px',margin:0,color:'#fff'});clone.querySelectorAll('img').forEach(img=>img.style.maxHeight='40vh');stage.appendChild(clone);autoFit(clone);}const c=document.createElement('div');c.style.cssText='position:absolute;bottom:20px;right:20px;font-family:sans-serif;color:#888;font-size:18px;cursor:pointer;user-select:none;text-align:right;';c.innerHTML=Math.round(((currentIndex+1)/elements.length)*100)+'%<br>&#128269; '+(currentIndex+1)+' / '+elements.length;c.onclick=()=>{let p=prompt('Ir para a página (1-'+elements.length+'):');if(p){let n=parseInt(p,10);if(n>0&&n<=elements.length){currentIndex=n-1;render();}}};stage.appendChild(c);}window.addEventListener('keydown',(e)=>{if(e.key==='PageDown'&&currentIndex<elements.length-1){e.preventDefault();currentIndex++;render();}else if(e.key==='PageUp'&&currentIndex>0){e.preventDefault();currentIndex--;render();}else if(e.key==='Home'&&currentIndex>0){e.preventDefault();currentIndex=0;render();}else if(e.key==='End'&&currentIndex<elements.length-1){e.preventDefault();currentIndex=elements.length-1;render();}});window.addEventListener('resize',render);render();})();"
 
 ^F12:: {
+    global ModoParagrafo := true
     SavedClip := A_Clipboard
     A_Clipboard := jsCode
     ClipWait(1)
@@ -19,3 +22,60 @@ global jsCode := "(function(){const elements=[...document.querySelectorAll('.ent
     Sleep(100)
     A_Clipboard := SavedClip ; Devolve o seu texto copiado original
 }
+
+^F13:: {
+    global ModoParagrafo := false
+    Send("{F5}") ; Recarrega a página para sair do Modo Parágrafo
+}
+
+; --- NAVEGAÇÃO ERGONÔMICA (SÓ FUNCIONA COM MODO PARÁGRAFO ATIVO) ---
+#HotIf WinActive("ahk_exe chrome.exe") && ModoParagrafo
+$Capslock::Send("{PgUp}")
+$Space::Send("{PgDn}")
+
+; --- ANOTAÇÃO RÁPIDA (FUNCIONA SEMPRE NO CHROME) ---
+#HotIf WinActive("ahk_exe chrome.exe")
+
+NumpadAdd:: {
+    janelaOriginal := WinGetID("A")
+    
+    A_Clipboard := ""
+    Sleep(50)
+    Send "^c"
+    
+    if !ClipWait(1) {
+        return 
+    }
+    
+    ; --- INÍCIO DO TRATAMENTO DE TEXTO ---
+    textoTratado := Trim(A_Clipboard, " `t`r`n")
+    
+    textoTratado := StrUpper(SubStr(textoTratado, 1, 1)) . SubStr(textoTratado, 2)
+    
+    if (SubStr(textoTratado, -1) != ".") {
+        textoTratado .= "."
+    }
+    
+    A_Clipboard := textoTratado
+    ; --- FIM DO TRATAMENTO DE TEXTO ---
+    
+if WinExist("ahk_exe Obsidian.exe") {
+        WinActivate "ahk_exe Obsidian.exe"
+        
+        ; Aguarda até 2 segundos para garantir que o Obsidian está realmente focado e pronto
+        if WinWaitActive("ahk_exe Obsidian.exe", , 2) {
+            Sleep 100 ; Pequena pausa de segurança para o buffer do teclado do Windows
+            Send "^v"
+            Sleep 100
+            Send "{Enter}" ; Envia os dois Enters de forma limpa e econômica
+            Sleep 100
+            
+            WinActivate "ahk_id " janelaOriginal
+        }
+    
+    } else {
+        MsgBox "O Obsidian não parece estar aberto.", "Aviso de Anotação"
+    }
+}
+
+#HotIf
