@@ -95,4 +95,33 @@ if WinExist("ahk_exe Obsidian.exe") {
     }
 }
 
+NumpadSub:: {
+    A_Clipboard := ""
+    Send "^c"
+    
+    if !ClipWait(1) {
+        return 
+    }
+    
+    Sleep(100)
+    
+    if WinExist("ahk_exe Code.exe") {
+        WinActivate "ahk_exe Code.exe"
+    } else {
+        Run "code"
+    }
+    
+    ; Aguarda até 3 segundos para garantir que o VS Code abriu/está em foco
+    if WinWaitActive("ahk_exe Code.exe", , 3) {
+        Sleep(100)
+        Send "^n"
+        Sleep(100)
+        Send "^v"
+        Sleep(100)
+        Send "^s"
+        Sleep(300)
+        SendText("*.cpp")
+    }
+}
+
 #HotIf
