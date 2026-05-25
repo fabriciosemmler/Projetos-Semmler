@@ -1,7 +1,6 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-AutoHide := "C:\Scripts\AutoHideMouseCursor_x64_p.exe"
 ; Define the save file location
 saveFile := A_ScriptDir "\Progress.ini"
 
@@ -27,6 +26,7 @@ $^w:: {
     ; 4. Restore exact previous clipboard state and close tab
     A_Clipboard := savedClip
     Send("^w")
+    ProcessClose("AutoHideMouseCursor_x64_p.exe")
 }
 #HotIf
 
@@ -37,7 +37,15 @@ $^w:: {
     
     if (savedURL != "") {
         Run(savedURL)
-        Run(AutoHide)
+        MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
+
+        ; --- NOVO: Automação do Modo Parágrafo ---
+        ; Aguarda até 3 segundos para o Chrome ficar ativo
+        if WinWaitActive("ahk_exe chrome.exe", , 3) {
+            Sleep(2000)      ; Espera 2 segundos para o site carregar
+            Send("^{F12}")   ; Dispara o seu atalho do Modo Parágrafo automaticamente
+        }
+
     } else {
         MsgBox("No LearnCPP progress saved yet!")
     }
