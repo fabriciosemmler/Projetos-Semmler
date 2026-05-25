@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+AutoHide := "C:\Scripts\AutoHideMouseCursor_x64_p.exe"
 ; Define the save file location
 saveFile := A_ScriptDir "\Progress.ini"
 
@@ -36,6 +37,7 @@ $^w:: {
     
     if (savedURL != "") {
         Run(savedURL)
+        Run(AutoHide)
     } else {
         MsgBox("No LearnCPP progress saved yet!")
     }
