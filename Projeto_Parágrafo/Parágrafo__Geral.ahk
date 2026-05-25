@@ -17,10 +17,10 @@ global jsCode := "(function(){const elements=[...document.querySelectorAll('.ent
     ClipWait(1)
 ; Teste
     Send("^l")              ; Foca a barra de endereços do Chrome (Ctrl+L)
-    Sleep(50)
+    Sleep(100)
     SendText("javascript:") ; Digita o prefixo para burlar a trava de segurança
     Send("^v")              ; Cola o resto do código
-    Sleep(50)
+    Sleep(100)
     Send("{Enter}")         ; Executa a mágica
 
     Sleep(100)
