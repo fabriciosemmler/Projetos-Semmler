@@ -37,8 +37,7 @@ $^w:: {
     
     if (savedURL != "") {
         Run(savedURL)
-        MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
-
+        
         ; --- NOVO: Automação do Modo Parágrafo ---
         ; Aguarda até 3 segundos para o Chrome ficar ativo
         if WinWaitActive("ahk_exe chrome.exe", , 3) {

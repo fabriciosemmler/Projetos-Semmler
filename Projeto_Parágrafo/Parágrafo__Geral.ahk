@@ -24,6 +24,7 @@ global jsCode := "(function(){const elements=[...document.querySelectorAll('.ent
     Send("{Enter}")         ; Executa a mágica
 
     Sleep(100)
+    MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
     A_Clipboard := SavedClip ; Devolve o seu texto copiado original
 }
 
