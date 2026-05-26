@@ -122,6 +122,8 @@ NumpadSub:: {
     ; Aguarda até 3 segundos para garantir que o VS Code abriu/está em foco
     if WinWaitActive("ahk_exe Code.exe", , 3) {
         Sleep(100)
+        Send "^1"
+        Sleep(100)
         Send "^n"
         Sleep(100)
         Send "^v"
