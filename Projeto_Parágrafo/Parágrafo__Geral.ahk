@@ -131,6 +131,10 @@ NumpadSub:: {
         Send "^s"
         Sleep(300)
         SendText("*.cpp")
+        Sleep(100)
+        Send("{Tab 3}")
+        Sleep(100)
+        Send "{Enter}"
     }
 }
 
