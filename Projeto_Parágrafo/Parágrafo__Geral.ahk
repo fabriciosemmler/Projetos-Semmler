@@ -37,6 +37,42 @@ global AbaSalva := ""
     Send("{F5}") ; Recarrega a página para sair do Modo Parágrafo
 }
 
+; =======================================================
+; MODO PARÁGRAFO GEMINI (Injeção via Console) - Shift+F2
+; =======================================================
+!F12:: {
+    global ModoParagrafo := true
+    global AbaSalva := WinGetTitle("A")
+    SetTimer(VerificaAbaChrome, 250)
+
+    SplitPath(A_LineFile, , &PastaAtual)
+    jsCode := FileRead(PastaAtual "\modo_paragrafo_gemini.js") 
+
+    SavedClip := ClipboardAll() 
+    A_Clipboard := "" 
+    A_Clipboard := jsCode
+    ClipWait(1)
+    
+    Send("^+j")             ; Abre o Console (Ctrl+Shift+J)
+    Sleep(1000)             ; Aguarda o painel abrir
+    Send("^v")              ; Cola o código limpo
+    Sleep(200)              
+    Send("{Enter}")         ; Executa
+    Sleep(200)
+    Send("^+j")             ; Fecha o Console
+
+    Sleep(200)              
+    MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
+    A_Clipboard := SavedClip 
+}
+
+!F13:: {
+    global ModoParagrafo := false
+    SetTimer(VerificaAbaChrome, 0)
+    global AbaSalva := ""
+    Send("{F5}") 
+}
+
 VerificaAbaChrome() {
     global ModoParagrafo, AbaSalva
     if WinActive("ahk_exe chrome.exe") {
