@@ -9,22 +9,25 @@ global AbaSalva := ""
     global AbaSalva := WinGetTitle("A")
     SetTimer(VerificaAbaChrome, 250)
 
-    ; Lê o arquivo JS externo e substitui as quebras de linha por espaços (obrigatório para a barra de endereços do Chrome)
-    jsCode := RegExReplace(FileRead("modo_paragrafo.js"), "\R", " ")
+    ; Passo 1: Descobre a pasta exata onde ESTE script (.ahk) está salvo
+    SplitPath(A_LineFile, , &PastaAtual)
+    
+    ; Passo 2: Lê o JS garantindo que ele o procure na mesma pasta
+    jsCode := RegExReplace(FileRead(PastaAtual "\modo_paragrafo.js"), "\R", " ")
 
     SavedClip := A_Clipboard
     A_Clipboard := jsCode
     ClipWait(1)
-    Send("^l")              ; Foca a barra de endereços do Chrome (Ctrl+L)
+    Send("^l")              
     Sleep(100)
-    SendText("javascript:") ; Digita o prefixo para burlar a trava de segurança
-    Send("^v")              ; Cola o resto do código
+    SendText("javascript:") 
+    Send("^v")              
     Sleep(100)
-    Send("{Enter}")         ; Executa a mágica
+    Send("{Enter}")         
 
     Sleep(100)
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
-    A_Clipboard := SavedClip ; Devolve o seu texto copiado original
+    A_Clipboard := SavedClip 
 }
 
 ^F13:: {
