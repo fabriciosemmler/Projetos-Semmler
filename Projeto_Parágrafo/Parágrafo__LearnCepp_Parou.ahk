@@ -6,7 +6,8 @@ saveFile := A_ScriptDir "\Progress.ini"
 
 ; --- SAVE PROGRESS ---
 #HotIf WinActive("ahk_exe chrome.exe")
-$^w:: {
+$^w::
+^+w:: {
     ; 1. Backup everything on the clipboard securely
     savedClip := ClipboardAll()
     A_Clipboard := ""
@@ -23,10 +24,15 @@ $^w:: {
         }
     }
     
-    ; 4. Restore exact previous clipboard state and close tab
+    ; 4. Restore exact previous clipboard state
     A_Clipboard := savedClip
-    Send("^w")
-    ProcessClose("AutoHideMouseCursor_x64_p.exe")
+    
+    ; 5. Only close the tab if Ctrl+W was used
+    Send("{Escape 2}")
+    if (A_ThisHotkey = "$^w") {
+        Send("^w")
+        ProcessClose("AutoHideMouseCursor_x64_p.exe")
+    }
 }
 #HotIf
 
