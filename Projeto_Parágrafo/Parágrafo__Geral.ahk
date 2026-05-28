@@ -51,14 +51,15 @@ VerificaAbaChrome() {
 ; --- NAVEGAÇÃO ERGONÔMICA (SÓ FUNCIONA COM MODO PARÁGRAFO ATIVO) ---
 #HotIf WinActive("ahk_exe chrome.exe") && ModoParagrafo
 $Capslock::
+$a::
 {
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
-    Send("{PgUp}")
+    Send("{Blind}{PgUp}")
 }
 $Space::
 {
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
-    Send("{PgDn}")
+    Send("{Blind}{PgDn}")
 }
 
 ; --- ANOTAÇÃO RÁPIDA (FUNCIONA SEMPRE NO CHROME) ---

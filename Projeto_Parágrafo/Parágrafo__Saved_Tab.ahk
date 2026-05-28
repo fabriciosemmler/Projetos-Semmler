@@ -7,7 +7,7 @@ saveFile := A_ScriptDir "\Progress.ini"
 ; --- SAVE PROGRESS ---
 #HotIf WinActive("ahk_exe chrome.exe")
 $^w::
-^+w:: {
+$^+w:: {
     ; 1. Backup everything on the clipboard securely
     savedClip := ClipboardAll()
     A_Clipboard := ""
@@ -19,8 +19,8 @@ $^w::
     
     ; 3. Wait for data, then check if it's the target site
     if ClipWait(0.5) {
-        if InStr(A_Clipboard, "learncpp.com") {
-            IniWrite(A_Clipboard, saveFile, "LearnCPP", "LastURL")
+        if InStr(A_Clipboard, "learncpp.com") || InStr(A_Clipboard, "wikipedia.org") {
+            IniWrite(A_Clipboard, saveFile, "SavedTab", "LastURL")
         }
     }
     
@@ -39,7 +39,7 @@ $^w::
 ; --- LOAD PROGRESS ---
 ^F11:: {
     ; Read the saved URL, defaulting to a blank string if not found
-    savedURL := IniRead(saveFile, "LearnCPP", "LastURL", "")
+    savedURL := IniRead(saveFile, "SavedTab", "LastURL", "")
     
     if (savedURL != "") {
         Run(savedURL)
@@ -52,6 +52,6 @@ $^w::
         }
 
     } else {
-        MsgBox("No LearnCPP progress saved yet!")
+        MsgBox("No progress saved yet!")
     }
 }
