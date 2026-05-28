@@ -65,7 +65,9 @@ $Space::
 ; --- ANOTAÇÃO RÁPIDA (FUNCIONA SEMPRE NO CHROME) ---
 #HotIf WinActive("ahk_exe chrome.exe")
 
-NumpadAdd:: {
+NumpadAdd::
+MButton::
+{
     janelaOriginal := WinGetID("A")
     
     A_Clipboard := ""
