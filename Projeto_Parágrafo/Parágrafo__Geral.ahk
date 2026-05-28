@@ -9,23 +9,24 @@ global AbaSalva := ""
     global AbaSalva := WinGetTitle("A")
     SetTimer(VerificaAbaChrome, 250)
 
-    ; Passo 1: Descobre a pasta exata onde ESTE script (.ahk) está salvo
     SplitPath(A_LineFile, , &PastaAtual)
-    
-    ; Passo 2: Lê o JS garantindo que ele o procure na mesma pasta
-    jsCode := RegExReplace(FileRead(PastaAtual "\modo_paragrafo.js"), "\R", " ")
+    ; Lemos o arquivo naturalmente, sem tentar espremer em uma linha
+    jsCode := FileRead(PastaAtual "\modo_paragrafo.js") 
 
-    SavedClip := A_Clipboard
+    SavedClip := ClipboardAll() 
+    A_Clipboard := "" 
     A_Clipboard := jsCode
     ClipWait(1)
-    Send("^l")              
-    Sleep(100)
-    SendText("javascript:") 
-    Send("^v")              
-    Sleep(100)
-    Send("{Enter}")         
+    
+    Send("^+j")             ; Abre o Console (Ctrl+Shift+J)
+    Sleep(1000)             ; Dá tempo para abrir e focar
+    Send("^v")              ; Cola o código limpo
+    Sleep(200)              
+    Send("{Enter}")         ; Executa
+    Sleep(200)
+    Send("^+j")             ; Fecha o Console
 
-    Sleep(100)
+    Sleep(200)              
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
     A_Clipboard := SavedClip 
 }
