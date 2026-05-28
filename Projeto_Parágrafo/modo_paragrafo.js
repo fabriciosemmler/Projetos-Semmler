@@ -1,19 +1,5 @@
 (function() {
-    let baseNode = document;
-    const isGemini = location.hostname.includes('gemini.google.com');
-    
-    if (isGemini) {
-        const msgs = document.querySelectorAll('message-content, .message-content');
-        if (msgs.length > 0) {
-            baseNode = msgs[msgs.length - 1];
-        }
-    }
-    
-    const targetSelectors = isGemini
-        ? '.markdown p, .markdown li, .markdown img, code, p'
-        : '.markdown p, .markdown li, .markdown img, .entry-content p, .entry-content li, .cpp-image-wrapper img, article p, article li, article img, main p, main li, main img, code, .content p, .post p, p';
-
-    const elements = [...baseNode.querySelectorAll(targetSelectors)].filter(el => !el.closest('noscript,header,footer,aside,iframe,.adsbygoogle,[id*=google_ads],[class*=ad-container],[class*=ad-slot],[id*=carbonads],[id*=ezoic],[class*=ezoic],[id*=gravatar],[class*=gravatar],[src*=gravatar],[class*=sidebar],[class*=vector-menu],[class*=mw-file-element],button,[role="button"]') && el.textContent.trim() !== 'Please enable JavaScript' && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
+    const elements = [...document.querySelectorAll('.entry-content p, .entry-content li, .cpp-image-wrapper img, article p, article li, article img, main p, main li, main img, code, .content p, .post p, p')].filter(el => !el.closest('noscript,header,footer,aside,iframe,.adsbygoogle,[id*=google_ads],[class*=ad-container],[class*=ad-slot],[id*=carbonads],[id*=ezoic],[class*=ezoic],[id*=gravatar],[class*=gravatar],[src*=gravatar],[class*=sidebar],[class*=vector-menu],[class*=mw-file-element]') && el.textContent.trim() !== 'Please enable JavaScript' && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
     
     if (elements.length === 0) return;
     
@@ -44,8 +30,7 @@
         localStorage.setItem('prgf_' + location.pathname, currentIndex);
         if (elements[currentIndex]) localStorage.setItem('txt_' + location.pathname, elements[currentIndex].textContent.trim().substring(0, 30));
         
-        stage.replaceChildren();
-        
+        stage.innerHTML = '';
         const original = elements[currentIndex];
         
         if (original.tagName === 'IMG') {
@@ -69,7 +54,7 @@
         
         const c = document.createElement('div');
         c.style.cssText = 'position:absolute;bottom:20px;right:20px;font-family:sans-serif;color:#888;font-size:18px;cursor:pointer;user-select:none;text-align:right;';
-        c.innerText = Math.round(((currentIndex + 1) / elements.length) * 100) + '%\n🔍 ' + (currentIndex + 1) + ' / ' + elements.length;
+        c.innerHTML = Math.round(((currentIndex + 1) / elements.length) * 100) + '%<br>&#128269; ' + (currentIndex + 1) + ' / ' + elements.length;
         
         c.onclick = () => {
             let p = prompt('Ir para a página (1-' + elements.length + '):');
@@ -87,7 +72,7 @@
         if (nL && nL.href) {
             c.style.right = '70px';
             const nb = document.createElement('div');
-            nb.textContent = '⏭️';
+            nb.innerHTML = '&#9193;';
             nb.style.cssText = 'position:absolute;bottom:25px;right:20px;font-size:24px;cursor:pointer;color:#888;';
             nb.onclick = () => location.href = nL.href;
             stage.appendChild(nb);
