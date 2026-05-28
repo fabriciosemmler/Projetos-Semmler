@@ -5,7 +5,8 @@
         baseNode = msgs[msgs.length - 1];
     }
     
-    const elements = [...baseNode.querySelectorAll('.markdown p, .markdown li, .markdown img, code, p')].filter(el => !el.closest('button,[role="button"]') && el.textContent.trim().length > 0);
+    // NOVO: Adicionada a regra que impede a captura de parágrafos/códigos que estejam dentro de um <li>
+    const elements = [...baseNode.querySelectorAll('.markdown p, .markdown li, .markdown img, code, p')].filter(el => !el.closest('button,[role="button"]') && el.textContent.trim().length > 0 && (el.tagName === 'LI' || !el.closest('li')));
     
     if (elements.length === 0) return;
     
@@ -61,7 +62,7 @@
         
         const c = document.createElement('div');
         c.style.cssText = 'position:absolute;bottom:20px;right:20px;font-family:sans-serif;color:#888;font-size:18px;cursor:pointer;user-select:none;text-align:right;';
-        c.innerText = Math.round(((currentIndex + 1) / elements.length) * 100) + '%\n🔍 ' + (currentIndex + 1) + ' / ' + elements.length;
+        c.innerText = Math.round(((currentIndex + 1) / elements.length) * 100) + '%\n' + String.fromCodePoint(128269) + ' ' + (currentIndex + 1) + ' / ' + elements.length;
         
         c.onclick = () => {
             let p = prompt('Ir para a página (1-' + elements.length + '):');
@@ -79,7 +80,7 @@
         if (nL && nL.href) {
             c.style.right = '70px';
             const nb = document.createElement('div');
-            nb.textContent = '⏭️';
+            nb.textContent = String.fromCodePoint(9193);
             nb.style.cssText = 'position:absolute;bottom:25px;right:20px;font-size:24px;cursor:pointer;color:#888;';
             nb.onclick = () => location.href = nL.href;
             stage.appendChild(nb);
