@@ -5,8 +5,8 @@
         baseNode = msgs[msgs.length - 1];
     }
     
-    // NOVO: Adicionada a regra que impede a captura de parágrafos/códigos que estejam dentro de um <li>
-    const elements = [...baseNode.querySelectorAll('.markdown p, .markdown li, .markdown img, code, p')].filter(el => !el.closest('button,[role="button"]') && el.textContent.trim().length > 0 && (el.tagName === 'LI' || !el.closest('li')));
+    // NOVO: Adicionado .markdown h3 e h3 na lista de busca
+    const elements = [...baseNode.querySelectorAll('.markdown h3, .markdown p, .markdown li, .markdown img, code, h3, p')].filter(el => !el.closest('button,[role="button"]') && el.textContent.trim().length > 0 && (el.tagName === 'LI' || !el.closest('li')));
     
     if (elements.length === 0) return;
     
