@@ -90,12 +90,12 @@ $Capslock::
 $a::
 {
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
-    Send("{Blind}{PgUp}")
+    Send("{Blind}a")
 }
 $Space::
 {
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
-    Send("{Blind}{PgDn}")
+    Send("{Blind}{Space}")
 }
 
 ; --- ANOTAÇÃO RÁPIDA (FUNCIONA SEMPRE NO CHROME) ---

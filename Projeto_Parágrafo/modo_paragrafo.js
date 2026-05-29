@@ -80,11 +80,11 @@
     }
     
     window.addEventListener('keydown', (e) => {
-        if (e.key === 'PageDown' && currentIndex < elements.length - 1) {
+        if (e.key === ' ' && currentIndex < elements.length - 1) {
             e.preventDefault();
             currentIndex++;
             render();
-        } else if (e.key === 'PageUp' && currentIndex > 0) {
+        } else if (e.key.toLowerCase() === 'a' && currentIndex > 0) {
             e.preventDefault();
             currentIndex--;
             render();
