@@ -1,5 +1,5 @@
 (function() {
-    const elements = [...document.querySelectorAll('.entry-content p, .entry-content li, .cpp-image-wrapper img, article p, article li, article img, main p, main li, main img, code, .content p, .post p, p')].filter(el => !el.closest('noscript,header,footer,aside,iframe,.adsbygoogle,[id*=google_ads],[class*=ad-container],[class*=ad-slot],[id*=carbonads],[id*=ezoic],[class*=ezoic],[id*=gravatar],[class*=gravatar],[src*=gravatar],[class*=sidebar],[class*=vector-menu],[class*=mw-file-element]') && el.textContent.trim() !== 'Please enable JavaScript' && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
+    const elements = [...document.querySelectorAll('.entry-content p, .entry-content li, .cpp-image-wrapper img, article p, article li, article img, main p, main li, main img, code, pre, .content p, .post p, p')].filter(el => !el.closest('noscript,header,footer,aside,iframe,.adsbygoogle,[id*=google_ads],[class*=ad-container],[class*=ad-slot],[id*=carbonads],[id*=ezoic],[class*=ezoic],[id*=gravatar],[class*=gravatar],[src*=gravatar],[class*=sidebar],[class*=vector-menu],[class*=mw-file-element]') && el.textContent.trim() !== 'Please enable JavaScript' && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
     
     if (elements.length === 0) return;
     
