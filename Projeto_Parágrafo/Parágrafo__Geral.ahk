@@ -98,11 +98,9 @@ $Space::
     Send("{Blind}{Space}")
 }
 
-; --- ANOTAÇÃO RÁPIDA (FUNCIONA SEMPRE NO CHROME) ---
-#HotIf WinActive("ahk_exe chrome.exe")
-
+; --- ANOTAÇÃO RÁPIDA PARA O OBSIDIAN E CRIAÇÃO DE ARQUIVO NO VS CODE ---
 NumpadAdd::
-MButton::
+RButton::
 {
     janelaOriginal := WinGetID("A")
     
