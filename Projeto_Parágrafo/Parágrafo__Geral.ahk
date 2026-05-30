@@ -59,7 +59,9 @@ global AbaSalva := ""
     Sleep(200)              
     Send("{Enter}")         ; Executa
     Sleep(200)
-    Send("^+j")             ; Fecha o Console
+    Send("^+j")
+    Sleep(200)             ; Fecha o Console
+    Send("{Home}")
 
     Sleep(200)              
     MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
