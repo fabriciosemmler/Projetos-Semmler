@@ -73,6 +73,25 @@ global AbaSalva := ""
     SetTimer(VerificaAbaChrome, 0)
     global AbaSalva := ""
     Send("{F5}") 
+    Sleep(500)
+    
+    ; Move o mouse para onde a caixa de texto do Gemini vai aparecer
+    MouseMove(580, 830)
+    
+    ; Move o mouse e espera até o cursor virar o seletor de texto ("IBeam")
+    while (A_Cursor != "IBeam")
+    {
+        MouseMove(600, 830)
+        Sleep(100)
+        MouseMove(580, 830)
+    }
+
+    ; Página carregada! Retoma o seu script original
+    MouseMove(A_ScreenWidth - 150, A_ScreenHeight / 2)
+    Sleep(200)
+    MouseClick("left")
+    Sleep(200)
+    Send("{End}")
 }
 
 VerificaAbaChrome() {
