@@ -119,6 +119,9 @@ $Space::
     Send("{Blind}{Space}")
 }
 
+; A ALTERAÇÃO FOI FEITA NA LINHA ABAIXO:
+#HotIf (WinActive("ahk_exe chrome.exe") && ModoParagrafo) || WinActive("Microsoft Learn")
+
 ; --- ANOTAÇÃO RÁPIDA PARA O OBSIDIAN E CRIAÇÃO DE ARQUIVO NO VS CODE ---
 NumpadAdd::
 RButton::
