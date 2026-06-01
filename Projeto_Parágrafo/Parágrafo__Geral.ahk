@@ -177,29 +177,27 @@ NumpadSub:: {
     
     Sleep(100)
     
-    if WinExist("ahk_exe Code.exe") {
-        WinActivate "ahk_exe Code.exe"
+    ; Remove espaços e quebras de linha extras das pontas
+    textoTratado := Trim(A_Clipboard, " `t`r`n")
+    
+    ; Usa Chr(96) para gerar as 3 crases (```) de forma segura e evitar o erro de sintaxe
+    crases := Chr(96) Chr(96) Chr(96)
+    A_Clipboard := crases . "cs" . "`n" . textoTratado . "`n" . crases
+    
+    ; Targets Obsidian
+    if WinExist("ahk_exe Obsidian.exe") {
+        WinActivate "ahk_exe Obsidian.exe"
     } else {
-        Run "code"
+        MsgBox 'O Obsidian não parece estar aberto.'
+        return
     }
     
-    ; Aguarda até 3 segundos para garantir que o VS Code abriu/está em foco
-    if WinWaitActive("ahk_exe Code.exe", , 3) {
-        Sleep(100)
-        Send "^1"
-        Sleep(100)
-        Send "^n"
+    ; Waits up to 3 seconds for Obsidian to be in focus, pastes, and presses Enter
+    if WinWaitActive("ahk_exe Obsidian.exe", , 3) {
         Sleep(100)
         Send "^v"
-        Sleep(100)
-        Send "^s"
-        Sleep(300)
-        SendText("*.cpp")
-        Sleep(100)
-        Send("{Tab 3}")
         Sleep(100)
         Send "{Enter}"
     }
 }
-
 #HotIf
