@@ -153,11 +153,11 @@ if WinExist("ahk_exe Obsidian.exe") {
         
         ; Aguarda até 2 segundos para garantir que o Obsidian está realmente focado e pronto
         if WinWaitActive("ahk_exe Obsidian.exe", , 2) {
-            Sleep 100 ; Pequena pausa de segurança para o buffer do teclado do Windows
+            Sleep (100) ; Pequena pausa de segurança para o buffer do teclado do Windows
             Send "^v"
-            Sleep 100
+            Sleep (100)
             Send "{Enter}" ; Envia os dois Enters de forma limpa e econômica
-            Sleep 100
+            Sleep (100)
             
             WinActivate "ahk_id " janelaOriginal
         }
@@ -168,6 +168,7 @@ if WinExist("ahk_exe Obsidian.exe") {
 }
 
 NumpadSub:: {
+    
     A_Clipboard := ""
     Send "^c"
     
@@ -198,6 +199,9 @@ NumpadSub:: {
         Send "^v"
         Sleep(100)
         Send "{Enter}"
+        Sleep(100)
+
+        WinActivate "ahk_exe Code.exe"
     }
 }
 #HotIf
