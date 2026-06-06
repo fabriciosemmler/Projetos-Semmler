@@ -6,7 +6,7 @@
     }
     
     // NOVO: Adicionado .markdown h3 e h3 na lista de busca
-    const elements = [...baseNode.querySelectorAll('.markdown h3, .markdown p, .markdown li, .markdown img, code, h3, p')].filter(el => !el.closest('button,[role="button"]') && el.textContent.trim().length > 0 && (el.tagName === 'LI' || !el.closest('li')));
+    const elements = [...baseNode.querySelectorAll('.markdown h1, .markdown h2, .markdown h3, .markdown p, .markdown li, .markdown img, code, h1, h2, h3, p')].filter(el => !el.closest('button,[role="button"]') && el.textContent.trim().length > 0 && (el.tagName === 'LI' || !el.closest('li')));
     
     if (elements.length === 0) return;
     
