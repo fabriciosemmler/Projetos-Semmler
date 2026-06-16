@@ -13,7 +13,7 @@ global AbaSalva := ""
     SplitPath(A_LineFile, , &PastaAtual)
     
     ; Passo 2: Lê o JS garantindo que ele o procure na mesma pasta
-    jsCode := RegExReplace(FileRead(PastaAtual "\modo_paragrafo_microsoft.js"), "\R", " ")
+    jsCode := RegExReplace(FileRead(PastaAtual "\modo_paragrafo_git.js"), "\R", " ")
 
     SavedClip := A_Clipboard
     A_Clipboard := jsCode
