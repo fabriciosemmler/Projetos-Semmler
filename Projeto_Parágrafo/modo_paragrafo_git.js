@@ -1,6 +1,5 @@
 (function() {
-    // PASSO 1: Seletor otimizado exclusivamente para o corpo de texto e códigos do site Oficial do Git
-    const elements = [...document.querySelectorAll('#content p, #content li, .listingblock pre, #content img')].filter(el => !el.closest('noscript,header,footer,aside,.sidebar') && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
+    const elements = [...document.querySelectorAll('h1, h2, #content p, #content li, .listingblock pre, #content img')].filter(el => !el.closest('noscript,header,footer,aside,.sidebar') && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
     
     if (elements.length === 0) return;
     
@@ -10,8 +9,9 @@
     document.body.style.overflow = 'hidden';
     document.body.appendChild(stage);
     
+    // MODIFICAÇÃO: Previne que o script se perca se o elemento salvo for uma imagem
     let st = localStorage.getItem('txt_' + location.pathname);
-    let currentIndex = st ? elements.findIndex(el => el.textContent.trim().substring(0, 30) === st) : -1;
+    let currentIndex = st ? elements.findIndex(el => (el.tagName === 'IMG' ? el.src : el.textContent.trim().substring(0, 30)) === st) : -1;
     
     if (currentIndex === -1) currentIndex = parseInt(localStorage.getItem('prgf_' + location.pathname)) || 0;
     if (currentIndex >= elements.length) currentIndex = 0;
@@ -29,7 +29,12 @@
     
     function render() {
         localStorage.setItem('prgf_' + location.pathname, currentIndex);
-        if (elements[currentIndex]) localStorage.setItem('txt_' + location.pathname, elements[currentIndex].textContent.trim().substring(0, 30));
+        
+        // MODIFICAÇÃO: Salva o link da imagem caso seja imagem, senão salva o texto padrão
+        if (elements[currentIndex]) {
+            let valToSave = elements[currentIndex].tagName === 'IMG' ? elements[currentIndex].src : elements[currentIndex].textContent.trim().substring(0, 30);
+            localStorage.setItem('txt_' + location.pathname, valToSave);
+        }
         
         stage.innerHTML = '';
         const original = elements[currentIndex];
@@ -69,7 +74,6 @@
         };
         stage.appendChild(c);
         
-        // PASSO 2: Adaptação simplificada para encontrar o link de Próximo Capítulo
         let nL = document.querySelector('a[rel="next"], a.next');
         if (nL && nL.href) {
             c.style.right = '70px';
