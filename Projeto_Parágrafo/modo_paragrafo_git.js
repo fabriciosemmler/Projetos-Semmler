@@ -1,6 +1,6 @@
 (function() {
-    const elements = [...document.querySelectorAll('h1, h2, #content p, #content li, .listingblock pre, #content img')].filter(el => !el.closest('noscript,header,footer,aside,.sidebar') && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
-    
+    const elements = [...document.querySelectorAll('h1, h2, #content p, #content li:not(:has(ol, ul)), .listingblock pre, #content img')].filter(el => !el.closest('[id*=book-chapters],noscript,header,footer,aside,.sidebar') && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
+
     if (elements.length === 0) return;
     
     const stage = document.createElement('div');
@@ -9,12 +9,15 @@
     document.body.style.overflow = 'hidden';
     document.body.appendChild(stage);
     
-    // MODIFICAÇÃO: Previne que o script se perca se o elemento salvo for uma imagem
-    let st = localStorage.getItem('txt_' + location.pathname);
-    let currentIndex = st ? elements.findIndex(el => (el.tagName === 'IMG' ? el.src : el.textContent.trim().substring(0, 30)) === st) : -1;
-    
-    if (currentIndex === -1) currentIndex = parseInt(localStorage.getItem('prgf_' + location.pathname)) || 0;
-    if (currentIndex >= elements.length) currentIndex = 0;
+    // MODIFICAÇÃO: Verifica se o URL atual é o mesmo da última leitura. Se mudar, começa do zero.
+    let currentIndex = 0;
+    if (localStorage.getItem('prgf_url') === location.href) {
+        let st = localStorage.getItem('prgf_txt');
+        currentIndex = st ? elements.findIndex(el => (el.tagName === 'IMG' ? el.src : el.textContent.trim().substring(0, 30)) === st) : -1;
+        
+        if (currentIndex === -1) currentIndex = parseInt(localStorage.getItem('prgf_idx')) || 0;
+        if (currentIndex >= elements.length) currentIndex = 0;
+    }
     
     function autoFit(element) {
         let fontSize = 72;
@@ -28,12 +31,13 @@
     }
     
     function render() {
-        localStorage.setItem('prgf_' + location.pathname, currentIndex);
+        // MODIFICAÇÃO: Salva o URL atual e o progresso global (sobrescrevendo o da página anterior)
+        localStorage.setItem('prgf_url', location.href);
+        localStorage.setItem('prgf_idx', currentIndex);
         
-        // MODIFICAÇÃO: Salva o link da imagem caso seja imagem, senão salva o texto padrão
         if (elements[currentIndex]) {
             let valToSave = elements[currentIndex].tagName === 'IMG' ? elements[currentIndex].src : elements[currentIndex].textContent.trim().substring(0, 30);
-            localStorage.setItem('txt_' + location.pathname, valToSave);
+            localStorage.setItem('prgf_txt', valToSave);
         }
         
         stage.innerHTML = '';
