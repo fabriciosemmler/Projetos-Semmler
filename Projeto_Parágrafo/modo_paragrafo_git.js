@@ -1,5 +1,5 @@
 (function() {
-    const elements = [...document.querySelectorAll('h1, h2, #content p, #content li:not(:has(ol, ul)), .listingblock pre, #content img')].filter(el => !el.closest('[id*=book-chapters],noscript,header,footer,aside,.sidebar') && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
+    const elements = [...document.querySelectorAll('h1, h2, #content p, #content li:not(:has(p, ol, ul)), .listingblock pre, #content img')].filter(el => !el.closest('[id*=book-chapters],noscript,header,footer,aside,.sidebar') && (el.tagName === 'IMG' || el.textContent.trim().length > 0));
 
     if (elements.length === 0) return;
     
@@ -78,7 +78,7 @@
         };
         stage.appendChild(c);
         
-        let nL = document.querySelector('a[rel="next"], a.next');
+        let nL = document.querySelector('a[rel="next"], a.next') || Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase() === 'next');
         if (nL && nL.href) {
             c.style.right = '70px';
             const nb = document.createElement('div');
@@ -107,7 +107,7 @@
             currentIndex = elements.length - 1;
             render();
         } else if (e.altKey && e.key === 'ArrowRight') {
-            let nx = document.querySelector('a[rel="next"], a.next');
+            let nx = document.querySelector('a[rel="next"], a.next') || Array.from(document.querySelectorAll('a')).find(a => a.textContent.trim().toLowerCase() === 'next');
             if (nx && nx.href) {
                 e.preventDefault();
                 location.href = nx.href;
