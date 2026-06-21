@@ -186,7 +186,7 @@ NumpadSub:: {
     
     ; Usa Chr(96) para gerar as 3 crases (```) de forma segura e evitar o erro de sintaxe
     crases := Chr(96) Chr(96) Chr(96)
-    A_Clipboard := crases . "cs" . "`n" . textoTratado . "`n" . crases
+    A_Clipboard := crases . "shell" . "`n" . textoTratado . "`n" . crases
     
     ; Targets Obsidian
     if WinExist("ahk_exe Obsidian.exe") {
