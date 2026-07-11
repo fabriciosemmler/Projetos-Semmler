@@ -171,6 +171,8 @@ if WinExist("ahk_exe Obsidian.exe") {
 }
 
 NumpadSub:: {
+
+    janelaOriginalCode := WinGetID("A")
     
     A_Clipboard := ""
     Send "^c"
@@ -204,7 +206,7 @@ NumpadSub:: {
         Send "{Enter}"
         Sleep(100)
 
-        WinActivate "ahk_exe Code.exe"
+        WinActivate "ahk_id " janelaOriginalCode
     }
 }
 #HotIf
